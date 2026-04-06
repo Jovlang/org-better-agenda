@@ -3,13 +3,13 @@
 ;;; Commentary:
 ;; Self-contained custom agenda view with deadline/scheduled sorting,
 ;; all-day highlighting, and custom faces.
-;; Requires org, org-agenda, and org-modern.
+;; Requires org and org-agenda.  Integrates with org-modern if available.
 
 ;;; Code:
 
 (require 'org)
 (require 'org-agenda)
-(require 'org-modern)
+(require 'org-modern nil t)             ; soft dependency — used if present
 
 ;;; Date formatting
 
@@ -19,12 +19,15 @@
   "Month names for date formatting.")
 
 (defun org-real-agenda-format-date (datestr)
-  "Format Org DATESTR like <2026-04-04 Sat> as '4 April'."
+  "Format Org DATESTR like <2026-04-04 Sat> as '4 April'.
+Returns nil on any parse error so a bad timestamp never breaks the agenda."
   (when datestr
-    (let* ((ts (org-time-string-to-time datestr))
-           (day (string-to-number (format-time-string "%d" ts)))
-           (month (string-to-number (format-time-string "%m" ts))))
-      (format "%d %s" day (aref org-real-agenda-month-names month)))))
+    (condition-case nil
+        (let* ((ts (org-time-string-to-time datestr))
+               (day (string-to-number (format-time-string "%d" ts)))
+               (month (string-to-number (format-time-string "%m" ts))))
+          (format "%d %s" day (aref org-real-agenda-month-names month)))
+      (error nil))))
 
 (defun org-real-agenda-entry-date-info ()
   "Return readable DEADLINE/SCHEDULED info for current entry."
@@ -61,12 +64,12 @@
         (mb (org-real-agenda--marker-from-entry b))
         ta tb)
     (setq ta
-          (when ma
+          (when (and ma (marker-buffer ma))
             (with-current-buffer (marker-buffer ma)
               (goto-char ma)
               (org-real-agenda-entry-earliest-date))))
     (setq tb
-          (when mb
+          (when (and mb (marker-buffer mb))
             (with-current-buffer (marker-buffer mb)
               (goto-char mb)
               (org-real-agenda-entry-earliest-date))))
@@ -90,27 +93,40 @@
      ((null tb) 1)
      (t nil))))
 
-;;; Agenda display settings
+;;; Agenda display settings and faces
 
-(setq org-agenda-cmp-user-defined #'org-real-agenda-cmp-earliest-date
-      org-agenda-show-all-dates nil
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-agenda-scheduled-leaders '("" "")
-      org-agenda-current-time-string "◀ now ──────────"
-      org-agenda-block-separator ?─
-      org-agenda-tags-column 45
-      org-tags-column 0
-      org-agenda-time-grid
-      '((daily today require-timed)
-        (800 1200 1600 2000)
-        "  ·  "
-        "────────────────")
-      org-agenda-prefix-format
-      '((agenda . "  %-12t% s")
-        (todo   . " %i ")
-        (tags   . " %i %(org-real-agenda-entry-date-info) ")
-        (search . " %i ")))
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-show-all-dates nil
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-scheduled-leaders '("" "")
+        org-agenda-current-time-string "◀ now ──────────"
+        org-agenda-block-separator ?─
+        org-agenda-tags-column 45
+        org-tags-column 0
+        org-agenda-time-grid
+        '((daily today require-timed)
+          (800 1200 1600 2000)
+          "  ·  "
+          "────────────────")
+        org-agenda-prefix-format
+        '((agenda . "  %-12t% s")
+          (todo   . " %i ")
+          (tags   . " %i %(org-real-agenda-entry-date-info) ")
+          (search . " %i ")))
+
+  (define-key org-agenda-mode-map (kbd "d") #'org-agenda-deadline)
+  (define-key org-agenda-mode-map (kbd "s") #'org-agenda-schedule)
+  (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
+
+  (set-face-attribute 'org-agenda-date-today   nil :inherit 'warning                :foreground nil :weight 'bold   :underline nil)
+  (set-face-attribute 'org-agenda-date         nil :inherit 'font-lock-keyword-face  :foreground nil :weight 'normal)
+  (set-face-attribute 'org-agenda-date-weekend nil :inherit 'font-lock-constant-face :foreground nil :weight 'normal)
+  (set-face-attribute 'org-agenda-structure    nil :inherit 'font-lock-builtin-face  :foreground nil :weight 'bold   :height 1.05)
+  (set-face-attribute 'org-time-grid           nil :inherit 'shadow                  :foreground nil :weight 'normal)
+  (set-face-attribute 'org-agenda-current-time nil :inherit 'warning                :foreground nil :weight 'bold)
+  (set-face-attribute 'org-upcoming-deadline   nil :inherit 'error                   :foreground nil :weight 'normal)
+  (set-face-attribute 'org-scheduled-today     nil :inherit 'success                 :foreground nil :weight 'normal))
 
 ;;; Custom faces
 
@@ -130,20 +146,6 @@
   '((t :inherit font-lock-type-face :weight bold))
   "Face for scheduled dates in custom agenda sections.")
 
-(with-eval-after-load 'org-agenda
-  (define-key org-agenda-mode-map (kbd "d") #'org-agenda-deadline)
-  (define-key org-agenda-mode-map (kbd "s") #'org-agenda-schedule)
-  (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
-
-  (set-face-attribute 'org-agenda-date-today   nil :inherit 'warning               :foreground nil :weight 'bold   :underline nil)
-  (set-face-attribute 'org-agenda-date         nil :inherit 'font-lock-keyword-face :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-date-weekend nil :inherit 'font-lock-constant-face :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-structure    nil :inherit 'font-lock-builtin-face :foreground nil :weight 'bold   :height 1.05)
-  (set-face-attribute 'org-time-grid           nil :inherit 'shadow                 :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-current-time nil :inherit 'warning               :foreground nil :weight 'bold)
-  (set-face-attribute 'org-upcoming-deadline   nil :inherit 'error                  :foreground nil :weight 'normal)
-  (set-face-attribute 'org-scheduled-today     nil :inherit 'success                :foreground nil :weight 'normal))
-
 ;;; Highlighting
 
 (defun org-real-agenda-highlight-times ()
@@ -157,15 +159,17 @@
                          'face 'org-real-agenda-time-face))))
 
 (defun org-real-agenda-highlight-allday ()
-  "Highlight all-day events in the agenda block.
-
-This matches lines with deep indentation and visible text, which
-corresponds to all-day entries in the current layout."
+  "Highlight all-day agenda entries.
+Uses the `time-of-day' text property rather than layout heuristics."
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "^ \\{10,\\}\\(\\S-.*\\)$" nil t)
-      (put-text-property (match-beginning 1) (match-end 1)
-                         'face 'org-real-agenda-allday-face))))
+    (while (not (eobp))
+      (let ((bol (line-beginning-position)))
+        (when (and (eq (get-text-property bol 'org-agenda-type) 'agenda)
+                   (null (get-text-property bol 'time-of-day)))
+          (put-text-property bol (line-end-position)
+                             'face 'org-real-agenda-allday-face)))
+      (forward-line 1))))
 
 (defun org-real-agenda-highlight-date-info ()
   "Highlight date parts in 'Deadline:' and 'Scheduled:' agenda prefixes."
@@ -182,39 +186,53 @@ corresponds to all-day entries in the current layout."
       (put-text-property (match-beginning 2) (match-end 2)
                          'face 'org-real-agenda-scheduled-date-face))))
 
+;;; Finalize hook
+
+(defvar org-real-agenda--active nil
+  "Non-nil during `org-real-agenda' view generation.
+Guards the finalize hook so styling only applies to this view.")
+
 (defun org-real-agenda-finalize ()
   "Apply custom styling after agenda generation."
-  (org-modern-agenda)
-  (org-real-agenda-highlight-times)
-  (org-real-agenda-highlight-allday)
-  (org-real-agenda-highlight-date-info))
+  (when org-real-agenda--active
+    (when (fboundp 'org-modern-agenda)
+      (org-modern-agenda))
+    (org-real-agenda-highlight-times)
+    (org-real-agenda-highlight-allday)
+    (org-real-agenda-highlight-date-info)))
 
 (add-hook 'org-agenda-finalize-hook #'org-real-agenda-finalize)
 
 ;;; Custom commands
 
-(setq org-agenda-custom-commands
-      '(("g" "Tasks"
-         ((agenda ""
-                  ((org-agenda-span 7)
-                   (org-agenda-start-day "+0d")
-                   (org-agenda-start-on-weekday nil)
-                   (org-agenda-overriding-header "")
-                   (org-agenda-cmp-user-defined #'org-real-agenda-cmp-allday-first)
-                   (org-agenda-sorting-strategy '(user-defined-up time-up))))
-          (tags-todo "+DEADLINE<>\"\"|+SCHEDULED<>\"\""
-                     ((org-agenda-overriding-header "Must do")
-                      (org-agenda-sorting-strategy
-                       '(user-defined-up priority-down category-keep))))
-          (tags-todo "-DEADLINE<>\"\"-SCHEDULED<>\"\""
-                     ((org-agenda-overriding-header "When I have time")))))))
+;; "Must do": tasks with a DEADLINE or SCHEDULED date (either is sufficient).
+;; "When I have time": tasks with neither date set.
+;; Note: an entry where one property exists and the other is an empty string
+;; (degenerate) would fall through both filters; this is not a realistic case.
+(add-to-list 'org-agenda-custom-commands
+             '("g" "Tasks"
+               ((agenda ""
+                        ((org-agenda-span 7)
+                         (org-agenda-start-day "+0d")
+                         (org-agenda-start-on-weekday nil)
+                         (org-agenda-overriding-header "")
+                         (org-agenda-cmp-user-defined #'org-real-agenda-cmp-allday-first)
+                         (org-agenda-sorting-strategy '(user-defined-up time-up))))
+                (tags-todo "+DEADLINE<>\"\"|+SCHEDULED<>\"\""
+                           ((org-agenda-overriding-header "Must do")
+                            (org-agenda-cmp-user-defined #'org-real-agenda-cmp-earliest-date)
+                            (org-agenda-sorting-strategy
+                             '(user-defined-up priority-down category-keep))))
+                (tags-todo "-DEADLINE<>\"\"-SCHEDULED<>\"\""
+                           ((org-agenda-overriding-header "When I have time"))))))
 
 ;;; Entry point
 
 (defun org-real-agenda ()
   "Open the custom agenda view."
   (interactive)
-  (org-agenda nil "g"))
+  (let ((org-real-agenda--active t))
+    (org-agenda nil "g")))
 
 (provide 'org-real-agenda)
 ;;; org-real-agenda.el ends here
