@@ -60,7 +60,7 @@ the buffer is not killed out from under the marker during BODY."
                      `(when (buffer-live-p ,bs) (kill-buffer ,bs)))
                    buf-syms)))))
 
-;;; org-better-agenda-format-date
+;;; org-better-agenda-format-date — English (default)
 
 (ert-deftest ora/format-date/normal ()
   (should (equal (org-better-agenda-format-date "<2026-04-04 Sat>") "4 April")))
@@ -85,6 +85,21 @@ the buffer is not killed out from under the marker during BODY."
 (ert-deftest ora/format-date/with-repeater ()
   "Repeating timestamps should parse without error."
   (should (equal (org-better-agenda-format-date "<2026-04-04 Sat +1w>") "4 April")))
+
+;;; org-better-agenda-format-date — Norwegian
+
+(ert-deftest ora/format-date/norwegian-april ()
+  "Norwegian locale uses ordinal period and lowercase month names."
+  (let ((org-better-agenda-language 'no))
+    (should (equal (org-better-agenda-format-date "<2026-04-04 Sat>") "4. april"))))
+
+(ert-deftest ora/format-date/norwegian-january ()
+  (let ((org-better-agenda-language 'no))
+    (should (equal (org-better-agenda-format-date "<2026-01-01 Thu>") "1. januar"))))
+
+(ert-deftest ora/format-date/norwegian-december ()
+  (let ((org-better-agenda-language 'no))
+    (should (equal (org-better-agenda-format-date "<2026-12-31 Thu>") "31. desember"))))
 
 ;;; org-better-agenda-cmp-allday-first
 
@@ -181,7 +196,7 @@ the buffer is not killed out from under the marker during BODY."
                   (ora-test--make-dated-entry ma)
                   (ora-test--make-dated-entry mb))))))
 
-;;; org-better-agenda-entry-date-info
+;;; org-better-agenda-entry-date-info — English
 
 (ert-deftest ora/entry-date-info/deadline-only ()
   (ora-test--with-org-entry "* Task\nDEADLINE: <2026-04-04 Sat>\n"
@@ -200,6 +215,107 @@ the buffer is not killed out from under the marker during BODY."
 (ert-deftest ora/entry-date-info/neither ()
   (ora-test--with-org-entry "* Task\n"
     (should (equal (org-better-agenda-entry-date-info) ""))))
+
+;;; org-better-agenda-entry-date-info — Norwegian
+
+(ert-deftest ora/entry-date-info/norwegian-deadline ()
+  "Norwegian locale uses 'Frist' label, ordinal period, and lowercase month names."
+  (let ((org-better-agenda-language 'no))
+    (ora-test--with-org-entry "* Task\nDEADLINE: <2026-04-04 Sat>\n"
+      (should (equal (org-better-agenda-entry-date-info) "Frist: 4. april")))))
+
+(ert-deftest ora/entry-date-info/norwegian-scheduled ()
+  (let ((org-better-agenda-language 'no))
+    (ora-test--with-org-entry "* Task\nSCHEDULED: <2026-06-15 Mon>\n"
+      (should (equal (org-better-agenda-entry-date-info) "Planlagt: 15. juni")))))
+
+(ert-deftest ora/entry-date-info/norwegian-both ()
+  (let ((org-better-agenda-language 'no))
+    (ora-test--with-org-entry
+        "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
+      (should (equal (org-better-agenda-entry-date-info)
+                     "Frist: 4. april · Planlagt: 1. mars")))))
+
+;;; org-better-agenda--str
+
+(ert-deftest ora/str/english-keys ()
+  "All expected keys are present for the English locale."
+  (let ((org-better-agenda-language 'en))
+    (should (equal (org-better-agenda--str 'deadline-label)  "Deadline"))
+    (should (equal (org-better-agenda--str 'scheduled-label) "Scheduled"))
+    (should (equal (org-better-agenda--str 'must-do-header)  "Must do"))
+    (should (equal (org-better-agenda--str 'someday-header)  "When I have time"))
+    (should (equal (org-better-agenda--str 'view-title)      "Tasks"))))
+
+(ert-deftest ora/str/norwegian-keys ()
+  "All expected keys are present for the Norwegian locale."
+  (let ((org-better-agenda-language 'no))
+    (should (equal (org-better-agenda--str 'deadline-label)  "Frist"))
+    (should (equal (org-better-agenda--str 'scheduled-label) "Planlagt"))
+    (should (equal (org-better-agenda--str 'must-do-header)  "Nødvendige gjøremål"))
+    (should (equal (org-better-agenda--str 'someday-header)  "Når jeg har tid/lyst"))
+    (should (equal (org-better-agenda--str 'view-title)      "Oppgaver"))))
+
+;;; org-better-agenda-format-date-header
+;;
+;; Reference date: Wednesday 8 April 2026  → calendar list (4 8 2026)
+;; Monday 13 April 2026, ISO week 16       → calendar list (4 13 2026)
+
+(ert-deftest ora/format-date-header/english-weekday ()
+  "English: full day and month names, aligned layout."
+  (let ((org-better-agenda-language 'en))
+    (let ((result (org-better-agenda-format-date-header '(4 8 2026))))
+      (should (string-match-p "Wednesday" result))
+      (should (string-match-p "April"     result))
+      (should (string-match-p "2026"      result)))))
+
+(ert-deftest ora/format-date-header/english-monday-has-week ()
+  "English Monday: week number appended."
+  (let ((org-better-agenda-language 'en))
+    (let ((result (org-better-agenda-format-date-header '(4 13 2026))))
+      (should (string-match-p "Monday" result))
+      (should (string-match-p "W16"    result)))))
+
+(ert-deftest ora/format-date-header/english-non-monday-no-week ()
+  "Non-Monday entries carry no week number."
+  (let ((org-better-agenda-language 'en))
+    (should (not (string-match-p " W[0-9]"
+                                 (org-better-agenda-format-date-header '(4 8 2026)))))))
+
+(ert-deftest ora/format-date-header/norwegian-weekday ()
+  "Norwegian: capitalized day name, ordinal period, lowercase month."
+  (let ((org-better-agenda-language 'no))
+    (let ((result (org-better-agenda-format-date-header '(4 8 2026))))
+      (should (string-match-p "Onsdag" result))
+      (should (string-match-p "8\\."   result))
+      (should (string-match-p "april"  result))
+      (should (string-match-p "2026"   result)))))
+
+(ert-deftest ora/format-date-header/norwegian-monday-has-week ()
+  "Norwegian Monday: capitalized day name and week number appended."
+  (let ((org-better-agenda-language 'no))
+    (let ((result (org-better-agenda-format-date-header '(4 13 2026))))
+      (should (string-match-p "Mandag" result))
+      (should (string-match-p "W16"    result)))))
+
+(ert-deftest ora/format-date-header/norwegian-all-days ()
+  "All seven Norwegian day names (capitalized) appear in format-date-header."
+  (let ((org-better-agenda-language 'no)
+        ;; One known date per day-of-week starting from Sunday 2026-04-05
+        (dates '((4 5 2026)   ; Søndag
+                 (4 6 2026)   ; Mandag
+                 (4 7 2026)   ; Tirsdag
+                 (4 8 2026)   ; Onsdag
+                 (4 9 2026)   ; Torsdag
+                 (4 10 2026)  ; Fredag
+                 (4 11 2026)  ; Lørdag
+                 ))
+        (expected '("Søndag" "Mandag" "Tirsdag" "Onsdag"
+                    "Torsdag" "Fredag" "Lørdag")))
+    (cl-mapc
+     (lambda (date name)
+       (should (string-match-p name (org-better-agenda-format-date-header date))))
+     dates expected)))
 
 (provide 'org-better-agenda-test)
 ;;; org-better-agenda-test.el ends here
