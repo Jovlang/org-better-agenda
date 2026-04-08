@@ -232,18 +232,13 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Finalize hook
 
-(defvar org-better-agenda--active nil
-  "Non-nil during `org-better-agenda' view generation.
-Guards the finalize hook so styling only applies to this view.")
-
 (defun org-better-agenda-finalize ()
   "Apply custom styling after agenda generation."
-  (when org-better-agenda--active
-    (when (fboundp 'org-modern-agenda)
-      (org-modern-agenda))
-    (org-better-agenda-highlight-times)
-    (org-better-agenda-highlight-allday)
-    (org-better-agenda-highlight-date-info)))
+  (when (fboundp 'org-modern-agenda)
+    (org-modern-agenda))
+  (org-better-agenda-highlight-times)
+  (org-better-agenda-highlight-allday)
+  (org-better-agenda-highlight-date-info))
 
 (add-hook 'org-agenda-finalize-hook #'org-better-agenda-finalize)
 
@@ -335,8 +330,7 @@ command available in the standard org-agenda dispatcher (\\[org-agenda])."
   (interactive)
   ;; Build the command inline so it always reflects the current language,
   ;; regardless of when setup was last called.
-  (let ((org-better-agenda--active t)
-        (org-agenda-custom-commands (list (org-better-agenda--build-command)))
+  (let ((org-agenda-custom-commands (list (org-better-agenda--build-command)))
         (org-agenda-current-time-string
          (format "◀ %s ──────────" (org-better-agenda--str 'now-label))))
     (org-agenda nil "g")))
