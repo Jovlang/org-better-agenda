@@ -204,7 +204,8 @@ Uses the `time-of-day' text property rather than layout heuristics."
     (while (not (eobp))
       (let ((bol (line-beginning-position)))
         (when (and (eq (get-text-property bol 'org-agenda-type) 'agenda)
-                   (null (get-text-property bol 'time-of-day)))
+                   (null (get-text-property bol 'time-of-day))
+                   (get-text-property bol 'org-marker))
           (put-text-property bol (line-end-position)
                              'face 'org-better-agenda-allday-face)))
       (forward-line 1))))
@@ -234,10 +235,10 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 (defun org-better-agenda-finalize ()
   "Apply custom styling after agenda generation."
+  (org-better-agenda-highlight-allday)
   (when (fboundp 'org-modern-agenda)
     (org-modern-agenda))
   (org-better-agenda-highlight-times)
-  (org-better-agenda-highlight-allday)
   (org-better-agenda-highlight-date-info))
 
 (add-hook 'org-agenda-finalize-hook #'org-better-agenda-finalize)
