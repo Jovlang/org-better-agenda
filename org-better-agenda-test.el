@@ -1,14 +1,14 @@
-;;; org-real-agenda-test.el --- ERT tests for org-real-agenda -*- lexical-binding: t; -*-
+;;; org-better-agenda-test.el --- ERT tests for org-better-agenda -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Run with: emacs -batch -L . -l org-real-agenda-test.el -f ert-run-tests-batch-and-exit
+;; Run with: emacs -batch -L . -l org-better-agenda-test.el -f ert-run-tests-batch-and-exit
 
 ;;; Code:
 
 (require 'cl-lib)
 (require 'ert)
 (require 'org)
-(require 'org-real-agenda)
+(require 'org-better-agenda)
 
 ;;; Helpers
 
@@ -60,56 +60,56 @@ the buffer is not killed out from under the marker during BODY."
                      `(when (buffer-live-p ,bs) (kill-buffer ,bs)))
                    buf-syms)))))
 
-;;; org-real-agenda-format-date
+;;; org-better-agenda-format-date
 
 (ert-deftest ora/format-date/normal ()
-  (should (equal (org-real-agenda-format-date "<2026-04-04 Sat>") "4 April")))
+  (should (equal (org-better-agenda-format-date "<2026-04-04 Sat>") "4 April")))
 
 (ert-deftest ora/format-date/nil-input ()
-  (should (null (org-real-agenda-format-date nil))))
+  (should (null (org-better-agenda-format-date nil))))
 
 (ert-deftest ora/format-date/january ()
-  (should (equal (org-real-agenda-format-date "<2026-01-01 Thu>") "1 January")))
+  (should (equal (org-better-agenda-format-date "<2026-01-01 Thu>") "1 January")))
 
 (ert-deftest ora/format-date/december ()
-  (should (equal (org-real-agenda-format-date "<2026-12-31 Thu>") "31 December")))
+  (should (equal (org-better-agenda-format-date "<2026-12-31 Thu>") "31 December")))
 
 (ert-deftest ora/format-date/malformed-returns-nil ()
   "A bad timestamp must not error — condition-case returns nil."
-  (should (null (org-real-agenda-format-date "not-a-date"))))
+  (should (null (org-better-agenda-format-date "not-a-date"))))
 
 (ert-deftest ora/format-date/with-time-component ()
   "Timestamps that include a time should still return just the date."
-  (should (equal (org-real-agenda-format-date "<2026-06-15 Mon 14:30>") "15 June")))
+  (should (equal (org-better-agenda-format-date "<2026-06-15 Mon 14:30>") "15 June")))
 
 (ert-deftest ora/format-date/with-repeater ()
   "Repeating timestamps should parse without error."
-  (should (equal (org-real-agenda-format-date "<2026-04-04 Sat +1w>") "4 April")))
+  (should (equal (org-better-agenda-format-date "<2026-04-04 Sat +1w>") "4 April")))
 
-;;; org-real-agenda-cmp-allday-first
+;;; org-better-agenda-cmp-allday-first
 
 (ert-deftest ora/cmp-allday/both-allday ()
-  (should (null (org-real-agenda-cmp-allday-first
+  (should (null (org-better-agenda-cmp-allday-first
                  (ora-test--make-agenda-entry)
                  (ora-test--make-agenda-entry)))))
 
 (ert-deftest ora/cmp-allday/allday-sorts-before-timed ()
-  (should (= -1 (org-real-agenda-cmp-allday-first
+  (should (= -1 (org-better-agenda-cmp-allday-first
                  (ora-test--make-agenda-entry nil)
                  (ora-test--make-agenda-entry 1430)))))
 
 (ert-deftest ora/cmp-allday/timed-sorts-after-allday ()
-  (should (= 1 (org-real-agenda-cmp-allday-first
+  (should (= 1 (org-better-agenda-cmp-allday-first
                 (ora-test--make-agenda-entry 900)
                 (ora-test--make-agenda-entry nil)))))
 
 (ert-deftest ora/cmp-allday/both-timed-returns-nil ()
   "Two timed entries: allday comparator defers to other criteria."
-  (should (null (org-real-agenda-cmp-allday-first
+  (should (null (org-better-agenda-cmp-allday-first
                  (ora-test--make-agenda-entry 900)
                  (ora-test--make-agenda-entry 1430)))))
 
-;;; org-real-agenda-cmp-earliest-date
+;;; org-better-agenda-cmp-earliest-date
 ;;
 ;; These tests use `ora-test--with-live-org-buffers' because the comparator
 ;; dereferences markers into their source buffers.  `with-temp-buffer' kills
@@ -121,14 +121,14 @@ the buffer is not killed out from under the marker during BODY."
        (mb "* Task B\nDEADLINE: <2026-06-01 Mon>\n"))
     (let ((a (ora-test--make-dated-entry ma))
           (b (ora-test--make-dated-entry mb)))
-      (should (= -1 (org-real-agenda-cmp-earliest-date a b)))
-      (should (=  1 (org-real-agenda-cmp-earliest-date b a))))))
+      (should (= -1 (org-better-agenda-cmp-earliest-date a b)))
+      (should (=  1 (org-better-agenda-cmp-earliest-date b a))))))
 
 (ert-deftest ora/cmp-date/same-date-returns-nil ()
   (ora-test--with-live-org-buffers
       ((ma "* Task A\nDEADLINE: <2026-04-04 Sat>\n")
        (mb "* Task B\nDEADLINE: <2026-04-04 Sat>\n"))
-    (should (null (org-real-agenda-cmp-earliest-date
+    (should (null (org-better-agenda-cmp-earliest-date
                    (ora-test--make-dated-entry ma)
                    (ora-test--make-dated-entry mb))))))
 
@@ -138,14 +138,14 @@ the buffer is not killed out from under the marker during BODY."
        (mb "* Task B\n"))
     (let ((a (ora-test--make-dated-entry ma))
           (b (ora-test--make-dated-entry mb)))
-      (should (= -1 (org-real-agenda-cmp-earliest-date a b)))
-      (should (=  1 (org-real-agenda-cmp-earliest-date b a))))))
+      (should (= -1 (org-better-agenda-cmp-earliest-date a b)))
+      (should (=  1 (org-better-agenda-cmp-earliest-date b a))))))
 
 (ert-deftest ora/cmp-date/both-undated-returns-nil ()
   (ora-test--with-live-org-buffers
       ((ma "* Task A\n")
        (mb "* Task B\n"))
-    (should (null (org-real-agenda-cmp-earliest-date
+    (should (null (org-better-agenda-cmp-earliest-date
                    (ora-test--make-dated-entry ma)
                    (ora-test--make-dated-entry mb))))))
 
@@ -153,7 +153,7 @@ the buffer is not killed out from under the marker during BODY."
   (ora-test--with-live-org-buffers
       ((ma "* Task A\nSCHEDULED: <2026-03-01 Sun>\n")
        (mb "* Task B\nDEADLINE: <2026-05-01 Fri>\n"))
-    (should (= -1 (org-real-agenda-cmp-earliest-date
+    (should (= -1 (org-better-agenda-cmp-earliest-date
                    (ora-test--make-dated-entry ma)
                    (ora-test--make-dated-entry mb))))))
 
@@ -165,7 +165,7 @@ the buffer is not killed out from under the marker during BODY."
        ;; B: deadline Mar 1
        (mb "* Task B\nDEADLINE: <2026-03-01 Sun>\n"))
     ;; Feb 1 < Mar 1, so A sorts before B
-    (should (= -1 (org-real-agenda-cmp-earliest-date
+    (should (= -1 (org-better-agenda-cmp-earliest-date
                    (ora-test--make-dated-entry ma)
                    (ora-test--make-dated-entry mb))))))
 
@@ -177,29 +177,29 @@ the buffer is not killed out from under the marker during BODY."
     ;; Kill A's buffer — ma is now a dead marker
     (kill-buffer (marker-buffer ma))
     ;; A has no resolvable date → treated as undated → B (dated) sorts first
-    (should (= 1 (org-real-agenda-cmp-earliest-date
+    (should (= 1 (org-better-agenda-cmp-earliest-date
                   (ora-test--make-dated-entry ma)
                   (ora-test--make-dated-entry mb))))))
 
-;;; org-real-agenda-entry-date-info
+;;; org-better-agenda-entry-date-info
 
 (ert-deftest ora/entry-date-info/deadline-only ()
   (ora-test--with-org-entry "* Task\nDEADLINE: <2026-04-04 Sat>\n"
-    (should (equal (org-real-agenda-entry-date-info) "Deadline: 4 April"))))
+    (should (equal (org-better-agenda-entry-date-info) "Deadline: 4 April"))))
 
 (ert-deftest ora/entry-date-info/scheduled-only ()
   (ora-test--with-org-entry "* Task\nSCHEDULED: <2026-06-15 Mon>\n"
-    (should (equal (org-real-agenda-entry-date-info) "Scheduled: 15 June"))))
+    (should (equal (org-better-agenda-entry-date-info) "Scheduled: 15 June"))))
 
 (ert-deftest ora/entry-date-info/both ()
   (ora-test--with-org-entry
       "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
-    (should (equal (org-real-agenda-entry-date-info)
+    (should (equal (org-better-agenda-entry-date-info)
                    "Deadline: 4 April · Scheduled: 1 March"))))
 
 (ert-deftest ora/entry-date-info/neither ()
   (ora-test--with-org-entry "* Task\n"
-    (should (equal (org-real-agenda-entry-date-info) ""))))
+    (should (equal (org-better-agenda-entry-date-info) ""))))
 
-(provide 'org-real-agenda-test)
-;;; org-real-agenda-test.el ends here
+(provide 'org-better-agenda-test)
+;;; org-better-agenda-test.el ends here

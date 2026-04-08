@@ -1,4 +1,4 @@
-# org-real-agenda
+# org-better-agenda
 
 A self-contained Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and faces.
 
@@ -25,25 +25,25 @@ A self-contained Emacs package providing a custom `org-agenda` view with opinion
 Clone the repo and add it to your load path:
 
 ```emacs-lisp
-(add-to-list 'load-path "/path/to/org-real-agenda")
-(require 'org-real-agenda)
+(add-to-list 'load-path "/path/to/org-better-agenda")
+(require 'org-better-agenda)
 ```
 
 ### use-package
 
 ```emacs-lisp
-(use-package org-real-agenda
-  :load-path "/path/to/org-real-agenda")
+(use-package org-better-agenda
+  :load-path "/path/to/org-better-agenda")
 ```
 
 ## Usage
 
 ```
-M-x org-real-agenda
+M-x org-better-agenda
 ```
 
 Or bind it to a key:
 
 ```emacs-lisp
-(global-set-key (kbd "C-c a") #'org-real-agenda)
+(global-set-key (kbd "C-c a") #'org-better-agenda)
 ```
