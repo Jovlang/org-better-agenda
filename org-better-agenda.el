@@ -75,10 +75,10 @@ scheduled-label, now-label, must-do-header, someday-header, view-title."
 
 (defcustom org-better-agenda-language 'en
   "Language for agenda labels and date formatting.
-Supported values: `en' (English), `no' (Norwegian Bokmål), `it' (Italian).
+Supported values: `en' (English), `no' (Norwegian), `it' (Italian), `de' (German).
 After changing this interactively, call `org-better-agenda-setup' to apply."
   :type '(choice (const :tag "English" en)
-                 (const :tag "Norwegian Bokmål" no)
+                 (const :tag "Norwegian" no)
                  (const :tag "Italian" it)
                  (const :tag "German" de))
   :group 'org-better-agenda
