@@ -89,6 +89,31 @@ These are set in `org-agenda-mode-map` when the package loads.
 | `T` | Toggle tag display and refresh |
 | `L` | Cycle through available languages and refresh |
 
+## Recommended colors
+
+These face settings work well with [Everforest](https://github.com/sainnhe/everforest)-style themes:
+
+```emacs-lisp
+(with-eval-after-load 'org-modern
+  (set-face-attribute 'org-modern-tag          nil :foreground "#abc"))
+
+(with-eval-after-load 'org-agenda
+  (set-face-attribute 'org-agenda-date-today   nil :foreground "#E69875" :weight 'bold   :underline nil)
+  (set-face-attribute 'org-agenda-date         nil :foreground "#83C092" :weight 'normal)
+  (set-face-attribute 'org-agenda-date-weekend nil :foreground "#D699B6" :weight 'normal)
+  (set-face-attribute 'org-agenda-structure    nil :foreground "#DBBC7F" :weight 'bold   :height 1.05)
+  (set-face-attribute 'org-time-grid           nil :foreground "#3D4F56" :weight 'normal)
+  (set-face-attribute 'org-agenda-current-time nil :foreground "#E69875" :weight 'bold)
+  (set-face-attribute 'org-upcoming-deadline   nil :foreground "#E67E80" :weight 'normal)
+  (set-face-attribute 'org-scheduled-today     nil :foreground "#A7C080" :weight 'normal))
+
+(with-eval-after-load 'org-better-agenda
+  (set-face-attribute 'org-better-agenda-time-face           nil :foreground "#7FBBB3" :weight 'bold   :slant 'normal)
+  (set-face-attribute 'org-better-agenda-allday-face         nil :foreground "#DBBC7F" :weight 'normal :slant 'italic)
+  (set-face-attribute 'org-better-agenda-deadline-date-face  nil :foreground "#E67E80" :weight 'bold)
+  (set-face-attribute 'org-better-agenda-scheduled-date-face nil :foreground "#7FBBB3" :weight 'bold))
+```
+
 ## License
 
 GPL-3.0-or-later. See [LICENSE](LICENSE).
