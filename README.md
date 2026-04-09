@@ -10,7 +10,7 @@ A self-contained Emacs package providing a custom `org-agenda` view with opinion
 - Deadline/scheduled dates shown as human-readable prefixes (e.g. `Deadline: 4 April`)
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates
 - Integrates with `org-modern` for styling
-- **Multilingual** — English and Norwegian Bokmål built in
+- **Multilingual** — English, Norwegian Bokmål, and Italian built in
 - Keybindings in agenda mode: `d` (deadline), `s` (schedule), `\` (set tags), `T` (toggle tags)
 
 ## Requirements
@@ -60,19 +60,22 @@ Set `org-better-agenda-language` before loading the package (or call
 
 ;; Norwegian Bokmål
 (setq org-better-agenda-language 'no)
+
+;; Italian
+(setq org-better-agenda-language 'it)
 ```
 
 Affected by this setting:
 
-| Element | `en` | `no` |
-|---|---|---|
-| Date prefixes | `Deadline: 4 April` | `Frist: 4. april` |
-| Scheduled prefix | `Scheduled: 14 April` | `Planlagt: 14. april` |
-| Calendar day names | `Wednesday` | `Onsdag` |
-| Calendar month names | `April` | `april` |
-| Current-time indicator | `◀ now ──────────` | `◀ nå ──────────` |
-| "Must do" header | `Must do` | `Nødvendige gjøremål` |
-| "When I have time" header | `When I have time` | `Når jeg har tid/lyst` |
+| Element | `en` | `no` | `it` |
+|---|---|---|---|
+| Date prefixes | `Deadline: 4 April` | `Frist: 4. april` | `Scadenza: 4 aprile` |
+| Scheduled prefix | `Scheduled: 14 April` | `Planlagt: 14. april` | `Pianificato: 14 aprile` |
+| Calendar day names | `Wednesday` | `Onsdag` | `Mercoledì` |
+| Calendar month names | `April` | `april` | `aprile` |
+| Current-time indicator | `◀ now ──────────` | `◀ nå ──────────` | `◀ adesso ──────────` |
+| "Must do" header | `Must do` | `Nødvendige gjøremål` | `Da fare` |
+| "When I have time" header | `When I have time` | `Når jeg har tid/lyst` | `Quando ho tempo` |
 
 ## Keybindings
 
@@ -84,3 +87,4 @@ These are set in `org-agenda-mode-map` when the package loads.
 | `s` | Schedule (`org-agenda-schedule`) |
 | `\` | Set tags (`org-agenda-set-tags`) |
 | `T` | Toggle tag display and refresh |
+| `L` | Cycle through available languages and refresh |
