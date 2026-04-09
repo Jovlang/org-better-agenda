@@ -244,37 +244,13 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Finalize hook
 
-(defun org-better-agenda-hide-empty-someday ()
-  "Remove the someday section when it contains no entries."
-  (let ((header (org-better-agenda--str 'someday-header))
-        (inhibit-read-only t))
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward (concat "^" (regexp-quote header)) nil t)
-        (let ((header-bol (line-beginning-position)))
-          (unless (save-excursion
-                    (let ((found nil))
-                      (while (and (not (eobp)) (not found))
-                        (forward-line 1)
-                        (when (get-text-property (line-beginning-position) 'org-marker)
-                          (setq found t)))
-                      found))
-            (goto-char header-bol)
-            (forward-line -1)
-            (when (string-match-p "─" (buffer-substring-no-properties
-                                       (line-beginning-position)
-                                       (line-end-position)))
-              (setq header-bol (line-beginning-position)))
-            (delete-region header-bol (point-max))))))))
-
 (defun org-better-agenda-finalize ()
   "Apply custom styling after agenda generation."
   (org-better-agenda-highlight-allday)
   (when (fboundp 'org-modern-agenda)
     (org-modern-agenda))
   (org-better-agenda-highlight-times)
-  (org-better-agenda-highlight-date-info)
-  (org-better-agenda-hide-empty-someday))
+  (org-better-agenda-highlight-date-info))
 
 (add-hook 'org-agenda-finalize-hook #'org-better-agenda-finalize)
 
