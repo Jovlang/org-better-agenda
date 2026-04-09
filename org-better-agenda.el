@@ -22,7 +22,7 @@
 
 ;;; Localization
 
-(defconst org-better-agenda--strings
+(defcustom org-better-agenda-language-setup
   '((en . ((months        . ["" "January" "February" "March" "April" "May" "June"
                               "July" "August" "September" "October" "November" "December"])
            ;; Sunday = index 0 … Saturday = index 6, matching calendar-day-of-week
@@ -54,7 +54,14 @@
            (must-do-header  . "Da fare")
            (someday-header  . "Quando ho tempo")
            (view-title      . "Attività"))))
-  "Per-language string table for org-better-agenda.")
+  "Per-language string table for org-better-agenda.
+Each entry is a cons of a language symbol and an alist of string keys.
+Users can add new languages or override existing ones by customizing this
+variable.  Required keys: months (vector of 13 strings, index 0 unused),
+day-names (vector of 7 strings, Sunday first), deadline-label,
+scheduled-label, now-label, must-do-header, someday-header, view-title."
+  :type 'alist
+  :group 'org-better-agenda)
 
 (defcustom org-better-agenda-language 'en
   "Language for agenda labels and date formatting.
@@ -71,7 +78,7 @@ After changing this interactively, call `org-better-agenda-setup' to apply."
 
 (defun org-better-agenda--str (key)
   "Return the localized string for KEY in `org-better-agenda-language'."
-  (let ((table (alist-get org-better-agenda-language org-better-agenda--strings)))
+  (let ((table (alist-get org-better-agenda-language org-better-agenda-language-setup)))
     (alist-get key table)))
 
 ;;; Date formatting
@@ -261,7 +268,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 (defun org-better-agenda-toggle-language ()
   "Cycle through available languages and refresh the agenda."
   (interactive)
-  (let* ((langs (mapcar #'car org-better-agenda--strings))
+  (let* ((langs (mapcar #'car org-better-agenda-language-setup))
          (next (cadr (member org-better-agenda-language langs)))
          (new-lang (or next (car langs))))
     (setq org-better-agenda-language new-lang)
