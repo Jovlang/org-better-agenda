@@ -1,8 +1,8 @@
 ;;; org-better-agenda.el --- Custom org-agenda view -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Self-contained custom agenda view with deadline/scheduled sorting,
-;; all-day highlighting, and custom faces.
+;; Custom agenda view with opinionated sorting and highlighting.
+;; Multilingual support (currently English, Norwegian, Italian).
 ;; Requires org and org-agenda.  Integrates with org-modern if available.
 
 ;;; Code:
@@ -41,15 +41,26 @@
            (now-label       . "nå")
            (must-do-header  . "Nødvendige gjøremål")
            (someday-header  . "Når jeg har tid/lyst")
-           (view-title      . "Oppgaver"))))
+           (view-title      . "Oppgaver")))
+    (it . ((months        . ["" "gennaio" "febbraio" "marzo" "aprile" "maggio" "giugno"
+                              "luglio" "agosto" "settembre" "ottobre" "novembre" "dicembre"])
+           (day-names     . ["Domenica" "Lunedì" "Martedì" "Mercoledì"
+                              "Giovedì" "Venerdì" "Sabato"])
+           (deadline-label  . "Scadenza")
+           (scheduled-label . "Pianificato")
+           (now-label       . "adesso")
+           (must-do-header  . "Da fare")
+           (someday-header  . "Quando ho tempo")
+           (view-title      . "Attività"))))
   "Per-language string table for org-better-agenda.")
 
 (defcustom org-better-agenda-language 'en
   "Language for agenda labels and date formatting.
-Supported values: `en' (English), `no' (Norwegian Bokmål).
+Supported values: `en' (English), `no' (Norwegian Bokmål), `it' (Italian).
 After changing this interactively, call `org-better-agenda-setup' to apply."
   :type '(choice (const :tag "English" en)
-                 (const :tag "Norwegian Bokmål" no))
+                 (const :tag "Norwegian Bokmål" no)
+                 (const :tag "Italian" it))
   :group 'org-better-agenda
   :set (lambda (sym val)
          (set-default sym val)
@@ -72,7 +83,7 @@ Returns nil on any parse error so a bad timestamp never breaks the agenda."
                (day (string-to-number (format-time-string "%d" ts)))
                (month (string-to-number (format-time-string "%m" ts))))
           (let ((month-name (aref (org-better-agenda--str 'months) month))
-                (sep (if (eq org-better-agenda-language 'en) " " ". ")))
+                (sep (if (memq org-better-agenda-language '(en it)) " " ". ")))
             (format "%d%s%s" day sep month-name)))
       (error nil))))
 
@@ -109,7 +120,7 @@ DATE is a calendar list (MONTH DAY YEAR).  Mirrors the layout of
          (weekstring  (if (= day-of-week 1)
                           (format " W%02d" iso-week)
                         ""))
-         (day-str     (if (eq org-better-agenda-language 'en)
+         (day-str     (if (memq org-better-agenda-language '(en it))
                           (format "%2d" day)
                         (format "%d." day))))
     (format "%-10s %s %s %4d%s"
@@ -243,6 +254,19 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 (add-hook 'org-agenda-finalize-hook #'org-better-agenda-finalize)
 
+;;; Language toggle
+
+(defun org-better-agenda-toggle-language ()
+  "Cycle through available languages and refresh the agenda."
+  (interactive)
+  (let* ((langs (mapcar #'car org-better-agenda--strings))
+         (next (cadr (member org-better-agenda-language langs)))
+         (new-lang (or next (car langs))))
+    (setq org-better-agenda-language new-lang)
+    (org-better-agenda-setup)
+    (org-better-agenda)
+    (message "Language switched to %s" new-lang)))
+
 ;;; Tags toggle
 
 (defun org-better-agenda-toggle-tags ()
@@ -278,6 +302,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   (define-key org-agenda-mode-map (kbd "s") #'org-agenda-schedule)
   (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
   (define-key org-agenda-mode-map (kbd "T") #'org-better-agenda-toggle-tags)
+  (define-key org-agenda-mode-map (kbd "L") #'org-better-agenda-toggle-language)
 
   (set-face-attribute 'org-agenda-date-today   nil :inherit 'warning                :foreground nil :weight 'bold   :underline nil)
   (set-face-attribute 'org-agenda-date         nil :inherit 'font-lock-keyword-face  :foreground nil :weight 'normal)
