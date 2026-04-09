@@ -68,18 +68,6 @@ Set `org-better-agenda-language` before loading the package (or call
 (setq org-better-agenda-language 'de)
 ```
 
-Affected by this setting:
-
-| Element | `en` | `no` | `it` |
-|---|---|---|---|
-| Date prefixes | `Deadline: 4 April` | `Frist: 4. april` | `Scadenza: 4 aprile` |
-| Scheduled prefix | `Scheduled: 14 April` | `Planlagt: 14. april` | `Pianificato: 14 aprile` |
-| Calendar day names | `Wednesday` | `Onsdag` | `Mercoledì` |
-| Calendar month names | `April` | `april` | `aprile` |
-| Current-time indicator | `◀ now ──────────` | `◀ nå ──────────` | `◀ adesso ──────────` |
-| "Must do" header | `Must do` | `Nødvendige gjøremål` | `Da fare` |
-| "When I have time" header | `When I have time` | `Når jeg har tid/lyst` | `Quando ho tempo` |
-
 ## Keybindings
 
 These are set in `org-agenda-mode-map` when the package loads.
