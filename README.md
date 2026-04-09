@@ -11,7 +11,7 @@ A self-contained Emacs package providing a custom `org-agenda` view with opinion
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates
 - Integrates with `org-modern` for styling
 - **Multilingual** — English, Norwegian Bokmål, and Italian built in
-- Keybindings in agenda mode: `d` (deadline), `s` (schedule), `\` (set tags), `T` (toggle tags)
+- Keybindings in agenda mode: `d` (deadline), `s` (schedule), `\` (set tags), `T` (toggle tags), `L` (cycle language)
 
 ## Requirements
 
