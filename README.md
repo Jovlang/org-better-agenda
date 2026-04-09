@@ -1,4 +1,4 @@
-# org-better-agenda
+# Org-Better-Agenda
 
 Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and faces.
 
