@@ -1,5 +1,7 @@
 ;;; org-better-agenda.el --- Custom org-agenda view -*- lexical-binding: t; -*-
 
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
 ;;; Commentary:
 ;; Custom agenda view with opinionated sorting and highlighting.
 ;; Multilingual support (currently English, Norwegian, Italian).

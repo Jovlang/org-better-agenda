@@ -88,3 +88,7 @@ These are set in `org-agenda-mode-map` when the package loads.
 | `\` | Set tags (`org-agenda-set-tags`) |
 | `T` | Toggle tag display and refresh |
 | `L` | Cycle through available languages and refresh |
+
+## License
+
+GPL-3.0-or-later. See [LICENSE](LICENSE).
