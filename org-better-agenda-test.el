@@ -101,6 +101,21 @@ the buffer is not killed out from under the marker during BODY."
   (let ((org-better-agenda-language 'no))
     (should (equal (org-better-agenda-format-date "<2026-12-31 Thu>") "31. desember"))))
 
+;;; org-better-agenda-format-date — German
+
+(ert-deftest ora/format-date/german-april ()
+  "German locale uses ordinal period and capitalized month names."
+  (let ((org-better-agenda-language 'de))
+    (should (equal (org-better-agenda-format-date "<2026-04-04 Sat>") "4. April"))))
+
+(ert-deftest ora/format-date/german-january ()
+  (let ((org-better-agenda-language 'de))
+    (should (equal (org-better-agenda-format-date "<2026-01-01 Thu>") "1. Januar"))))
+
+(ert-deftest ora/format-date/german-december ()
+  (let ((org-better-agenda-language 'de))
+    (should (equal (org-better-agenda-format-date "<2026-12-31 Thu>") "31. Dezember"))))
+
 ;;; org-better-agenda-cmp-allday-first
 
 (ert-deftest ora/cmp-allday/both-allday ()
@@ -236,6 +251,26 @@ the buffer is not killed out from under the marker during BODY."
       (should (equal (org-better-agenda-entry-date-info)
                      "Frist: 4. april · Planlagt: 1. mars")))))
 
+;;; org-better-agenda-entry-date-info — German
+
+(ert-deftest ora/entry-date-info/german-deadline ()
+  "German locale uses 'Frist' label, ordinal period, and capitalized month names."
+  (let ((org-better-agenda-language 'de))
+    (ora-test--with-org-entry "* Task\nDEADLINE: <2026-04-04 Sat>\n"
+      (should (equal (org-better-agenda-entry-date-info) "Frist: 4. April")))))
+
+(ert-deftest ora/entry-date-info/german-scheduled ()
+  (let ((org-better-agenda-language 'de))
+    (ora-test--with-org-entry "* Task\nSCHEDULED: <2026-06-15 Mon>\n"
+      (should (equal (org-better-agenda-entry-date-info) "Geplant: 15. Juni")))))
+
+(ert-deftest ora/entry-date-info/german-both ()
+  (let ((org-better-agenda-language 'de))
+    (ora-test--with-org-entry
+        "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
+      (should (equal (org-better-agenda-entry-date-info)
+                     "Frist: 4. April · Geplant: 1. März")))))
+
 ;;; org-better-agenda--str
 
 (ert-deftest ora/str/english-keys ()
@@ -255,6 +290,15 @@ the buffer is not killed out from under the marker during BODY."
     (should (equal (org-better-agenda--str 'must-do-header)  "Nødvendige gjøremål"))
     (should (equal (org-better-agenda--str 'someday-header)  "Når jeg har tid/lyst"))
     (should (equal (org-better-agenda--str 'view-title)      "Oppgaver"))))
+
+(ert-deftest ora/str/german-keys ()
+  "All expected keys are present for the German locale."
+  (let ((org-better-agenda-language 'de))
+    (should (equal (org-better-agenda--str 'deadline-label)  "Frist"))
+    (should (equal (org-better-agenda--str 'scheduled-label) "Geplant"))
+    (should (equal (org-better-agenda--str 'must-do-header)  "Zu erledigen"))
+    (should (equal (org-better-agenda--str 'someday-header)  "Wenn ich Zeit habe"))
+    (should (equal (org-better-agenda--str 'view-title)      "Aufgaben"))))
 
 ;;; org-better-agenda-format-date-header
 ;;
@@ -316,6 +360,22 @@ the buffer is not killed out from under the marker during BODY."
      (lambda (date name)
        (should (string-match-p name (org-better-agenda-format-date-header date))))
      dates expected)))
+
+(ert-deftest ora/format-date-header/german-weekday ()
+  "German: capitalized day name, ordinal period, capitalized month."
+  (let ((org-better-agenda-language 'de))
+    (let ((result (org-better-agenda-format-date-header '(4 8 2026))))
+      (should (string-match-p "Mittwoch" result))
+      (should (string-match-p "8\\."     result))
+      (should (string-match-p "April"   result))
+      (should (string-match-p "2026"    result)))))
+
+(ert-deftest ora/format-date-header/german-monday-has-week ()
+  "German Monday: capitalized day name and week number appended."
+  (let ((org-better-agenda-language 'de))
+    (let ((result (org-better-agenda-format-date-header '(4 13 2026))))
+      (should (string-match-p "Montag" result))
+      (should (string-match-p "W16"    result)))))
 
 (provide 'org-better-agenda-test)
 ;;; org-better-agenda-test.el ends here

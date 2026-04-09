@@ -53,7 +53,17 @@
            (now-label       . "adesso")
            (must-do-header  . "Da fare")
            (someday-header  . "Quando ho tempo")
-           (view-title      . "Attività"))))
+           (view-title      . "Attività")))
+    (de . ((months        . ["" "Januar" "Februar" "März" "April" "Mai" "Juni"
+                              "Juli" "August" "September" "Oktober" "November" "Dezember"])
+           (day-names     . ["Sonntag" "Montag" "Dienstag" "Mittwoch"
+                              "Donnerstag" "Freitag" "Samstag"])
+           (deadline-label  . "Frist")
+           (scheduled-label . "Geplant")
+           (now-label       . "jetzt")
+           (must-do-header  . "Zu erledigen")
+           (someday-header  . "Wenn ich Zeit habe")
+           (view-title      . "Aufgaben"))))
   "Per-language string table for org-better-agenda.
 Each entry is a cons of a language symbol and an alist of string keys.
 Users can add new languages or override existing ones by customizing this
@@ -69,7 +79,8 @@ Supported values: `en' (English), `no' (Norwegian Bokmål), `it' (Italian).
 After changing this interactively, call `org-better-agenda-setup' to apply."
   :type '(choice (const :tag "English" en)
                  (const :tag "Norwegian Bokmål" no)
-                 (const :tag "Italian" it))
+                 (const :tag "Italian" it)
+                 (const :tag "German" de))
   :group 'org-better-agenda
   :set (lambda (sym val)
          (set-default sym val)
