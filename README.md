@@ -10,7 +10,7 @@ Emacs package providing a custom `org-agenda` view with opinionated sorting, hig
 - Deadline/scheduled dates shown as human-readable prefixes (e.g. `Deadline: 4 April`)
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates
 - Integrates with `org-modern` for styling
-- **Multilingual** — English, Norwegian Bokmål, and Italian built in
+- **Multilingual** — English, Norwegian, Italian, and German built in
 - Keybindings in agenda mode: `d` (deadline), `s` (schedule), `\` (set tags), `T` (toggle tags), `L` (cycle language)
 
 ## Requirements
@@ -58,11 +58,14 @@ Set `org-better-agenda-language` before loading the package (or call
 ;; English (default)
 (setq org-better-agenda-language 'en)
 
-;; Norwegian Bokmål
+;; Norwegian
 (setq org-better-agenda-language 'no)
 
 ;; Italian
 (setq org-better-agenda-language 'it)
+
+;; German
+(setq org-better-agenda-language 'de)
 ```
 
 Affected by this setting:
