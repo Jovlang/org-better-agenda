@@ -4,7 +4,7 @@
 
 ;;; Commentary:
 ;; Custom agenda view with opinionated sorting and highlighting.
-;; Multilingual support (currently English, Norwegian, Italian).
+;; Multilingual support (currently English, Norwegian, Italian, German).
 ;; Requires org and org-agenda.  Integrates with org-modern if available.
 
 ;;; Code:
