@@ -1,6 +1,6 @@
 # org-better-agenda
 
-A self-contained Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and faces.
+Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and faces.
 
 ## Features
 
@@ -86,8 +86,8 @@ These are set in `org-agenda-mode-map` when the package loads.
 | `d` | Set deadline (`org-agenda-deadline`) |
 | `s` | Schedule (`org-agenda-schedule`) |
 | `\` | Set tags (`org-agenda-set-tags`) |
-| `T` | Toggle tag display and refresh |
-| `L` | Cycle through available languages and refresh |
+| `T` | Toggle tag display |
+| `L` | Cycle through available languages |
 
 ## Recommended colors
 
