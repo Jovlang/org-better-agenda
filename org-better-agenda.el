@@ -28,48 +28,70 @@
            ;; Sunday = index 0 … Saturday = index 6, matching calendar-day-of-week
            (day-names     . ["Sunday" "Monday" "Tuesday" "Wednesday"
                               "Thursday" "Friday" "Saturday"])
-           (deadline-label  . "Deadline")
-           (scheduled-label . "Scheduled")
-           (now-label       . "now")
-           (must-do-header  . "Must do")
-           (someday-header  . "When I have time")
-           (view-title      . "Tasks")))
+           (deadline-label    . "Deadline")
+           (scheduled-label   . "Scheduled")
+           (deadline-today    . "Deadline:  ")
+           (deadline-future   . "In %3d d.: ")
+           (deadline-past     . "%2d d. ago: ")
+           (scheduled-today   . "Scheduled: ")
+           (scheduled-past    . "Sched.%2dx: ")
+           (now-label         . "now")
+           (must-do-header    . "Must do")
+           (someday-header    . "When I have time")
+           (view-title        . "Tasks")))
     (no . ((months        . ["" "januar" "februar" "mars" "april" "mai" "juni"
                               "juli" "august" "september" "oktober" "november" "desember"])
            (day-names     . ["Søndag" "Mandag" "Tirsdag" "Onsdag"
                               "Torsdag" "Fredag" "Lørdag"])
-           (deadline-label  . "Frist")
-           (scheduled-label . "Planlagt")
-           (now-label       . "nå")
-           (must-do-header  . "Nødvendige gjøremål")
-           (someday-header  . "Når jeg har tid/lyst")
-           (view-title      . "Oppgaver")))
+           (deadline-label    . "Frist")
+           (scheduled-label   . "Planlagt")
+           (deadline-today    . "Frist:     ")
+           (deadline-future   . "Om %3d d.: ")
+           (deadline-past     . "%2d d. siden: ")
+           (scheduled-today   . "Planlagt:  ")
+           (scheduled-past    . "Plan.%2dx: ")
+           (now-label         . "nå")
+           (must-do-header    . "Nødvendige gjøremål")
+           (someday-header    . "Når jeg har tid/lyst")
+           (view-title        . "Oppgaver")))
     (it . ((months        . ["" "gennaio" "febbraio" "marzo" "aprile" "maggio" "giugno"
                               "luglio" "agosto" "settembre" "ottobre" "novembre" "dicembre"])
            (day-names     . ["Domenica" "Lunedì" "Martedì" "Mercoledì"
                               "Giovedì" "Venerdì" "Sabato"])
-           (deadline-label  . "Scadenza")
-           (scheduled-label . "Pianificato")
-           (now-label       . "adesso")
-           (must-do-header  . "Da fare")
-           (someday-header  . "Quando ho tempo")
-           (view-title      . "Attività")))
+           (deadline-label    . "Scadenza")
+           (scheduled-label   . "Pianificato")
+           (deadline-today    . "Scadenza:  ")
+           (deadline-future   . "Fra %3d g.: ")
+           (deadline-past     . "%2d g. fa:  ")
+           (scheduled-today   . "Pianif.:   ")
+           (scheduled-past    . "Pian.%2dx: ")
+           (now-label         . "adesso")
+           (must-do-header    . "Da fare")
+           (someday-header    . "Quando ho tempo")
+           (view-title        . "Attività")))
     (de . ((months        . ["" "Januar" "Februar" "März" "April" "Mai" "Juni"
                               "Juli" "August" "September" "Oktober" "November" "Dezember"])
            (day-names     . ["Sonntag" "Montag" "Dienstag" "Mittwoch"
                               "Donnerstag" "Freitag" "Samstag"])
-           (deadline-label  . "Frist")
-           (scheduled-label . "Geplant")
-           (now-label       . "jetzt")
-           (must-do-header  . "Zu erledigen")
-           (someday-header  . "Wenn ich Zeit habe")
-           (view-title      . "Aufgaben"))))
+           (deadline-label    . "Frist")
+           (scheduled-label   . "Geplant")
+           (deadline-today    . "Frist:     ")
+           (deadline-future   . "In %3d T.: ")
+           (deadline-past     . "Vor %2d T.: ")
+           (scheduled-today   . "Geplant:   ")
+           (scheduled-past    . "Gep.%2dx:  ")
+           (now-label         . "jetzt")
+           (must-do-header    . "Zu erledigen")
+           (someday-header    . "Wenn ich Zeit habe")
+           (view-title        . "Aufgaben"))))
   "Per-language string table for org-better-agenda.
 Each entry is a cons of a language symbol and an alist of string keys.
 Users can add new languages or override existing ones by customizing this
 variable.  Required keys: months (vector of 13 strings, index 0 unused),
 day-names (vector of 7 strings, Sunday first), deadline-label,
-scheduled-label, now-label, must-do-header, someday-header, view-title."
+scheduled-label, deadline-today, deadline-future, deadline-past,
+scheduled-today, scheduled-past, now-label, must-do-header,
+someday-header, view-title."
   :type 'alist
   :group 'org-better-agenda)
 
@@ -325,6 +347,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   (set-face-attribute 'org-time-grid           nil :inherit 'shadow                  :foreground nil :weight 'normal)
   (set-face-attribute 'org-agenda-current-time nil :inherit 'warning                :foreground nil :weight 'bold)
   (set-face-attribute 'org-upcoming-deadline   nil :inherit 'error                   :foreground nil :weight 'normal)
+  (set-face-attribute 'org-imminent-deadline   nil :inherit 'error                   :foreground nil :weight 'bold)
   (set-face-attribute 'org-scheduled-today     nil :inherit 'success                 :foreground nil :weight 'normal))
 
 ;;; Custom commands
@@ -361,7 +384,14 @@ command available in the standard org-agenda dispatcher (\\[org-agenda])."
   (add-to-list 'org-agenda-custom-commands
                (org-better-agenda--build-command))
   (setq org-agenda-current-time-string
-        (format "◀ %s ──────────" (org-better-agenda--str 'now-label))))
+        (format "◀ %s ──────────" (org-better-agenda--str 'now-label)))
+  (setq org-agenda-deadline-leaders
+        (list (org-better-agenda--str 'deadline-today)
+              (org-better-agenda--str 'deadline-future)
+              (org-better-agenda--str 'deadline-past)))
+  (setq org-agenda-scheduled-leaders
+        (list (org-better-agenda--str 'scheduled-today)
+              (org-better-agenda--str 'scheduled-past))))
 
 ;;; Entry point
 

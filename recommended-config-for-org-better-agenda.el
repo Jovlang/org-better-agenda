@@ -29,6 +29,7 @@
   (set-face-attribute 'org-time-grid           nil :foreground "#3D4F56" :weight 'normal)
   (set-face-attribute 'org-agenda-current-time nil :foreground "#E69875" :weight 'bold)
   (set-face-attribute 'org-upcoming-deadline   nil :foreground "#E67E80" :weight 'normal)
+  (set-face-attribute 'org-imminent-deadline   nil :foreground "#E67E80" :weight 'bold)
   (set-face-attribute 'org-scheduled-today     nil :foreground "#A7C080" :weight 'normal))
 
 (with-eval-after-load 'org-better-agenda
@@ -60,7 +61,7 @@
               "* TODO %?\nSCHEDULED: %^t\n")
              ("tb" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
-              "* TODO %?\nSCHEDULED: %^t\nDEADLINE: %^t\n")
+              "* TODO %?\nDEADLINE: %^t\nSCHEDULED: %^t\n")
 
              ("e" "Events")
              ("ee" "Event" entry
