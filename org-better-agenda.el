@@ -51,8 +51,8 @@
            (scheduled-today   . "Planlagt:  ")
            (scheduled-past    . "Plan.%2dx: ")
            (now-label         . "nå")
-           (must-do-header    . "Nødvendige gjøremål")
-           (someday-header    . "Når jeg har tid/lyst")
+           (must-do-header    . "Må gjøres")
+           (someday-header    . "Når jeg har tid")
            (view-title        . "Oppgaver")))
     (it . ((months        . ["" "gennaio" "febbraio" "marzo" "aprile" "maggio" "giugno"
                               "luglio" "agosto" "settembre" "ottobre" "novembre" "dicembre"])
@@ -130,9 +130,13 @@ Returns nil on any parse error so a bad timestamp never breaks the agenda."
       (error nil))))
 
 (defun org-better-agenda-entry-date-info ()
-  "Return readable DEADLINE/SCHEDULED info for current entry."
-  (let* ((deadline (org-entry-get nil "DEADLINE"))
-         (scheduled (org-entry-get nil "SCHEDULED"))
+  "Return readable DEADLINE/SCHEDULED info for the current agenda entry.
+Shows both dates when present, separated by \" · \"."
+  (let* ((el       (org-element-at-point))
+         (dl-ts    (org-element-property :deadline el))
+         (sc-ts    (org-element-property :scheduled el))
+         (deadline  (when dl-ts (org-element-property :raw-value dl-ts)))
+         (scheduled (when sc-ts (org-element-property :raw-value sc-ts)))
          (dl-label (org-better-agenda--str 'deadline-label))
          (sc-label (org-better-agenda--str 'scheduled-label))
          (parts
@@ -143,6 +147,7 @@ Returns nil on any parse error so a bad timestamp never breaks the agenda."
                  (when scheduled
                    (format "%s: %s" sc-label (org-better-agenda-format-date scheduled)))))))
     (string-join parts " · ")))
+
 
 ;;; Agenda date header
 
@@ -352,8 +357,8 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Custom commands
 
-;; "Must do": tasks with a DEADLINE or SCHEDULED date (either is sufficient).
-;; "When I have time": tasks with neither date set.
+;; "Upcoming deadlines": tasks with a DEADLINE date.
+;; "When I have time": tasks with no DEADLINE and no SCHEDULED date.
 (defun org-better-agenda--build-command ()
   "Return the \"g\" agenda command spec for the current language."
   `("g" ,(org-better-agenda--str 'view-title)
@@ -364,7 +369,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
               (org-agenda-overriding-header "")
               (org-agenda-cmp-user-defined #'org-better-agenda-cmp-allday-first)
               (org-agenda-sorting-strategy '(user-defined-up time-up))))
-     (tags-todo "+DEADLINE<>\"\"|+SCHEDULED<>\"\""
+     (tags-todo "+DEADLINE<>\"\""
                 ((org-agenda-overriding-header
                   ,(org-better-agenda--str 'must-do-header))
                  (org-agenda-cmp-user-defined

@@ -59,6 +59,7 @@
              ("ts" "Scheduled todo" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nSCHEDULED: %^t\n")
+             ;; Note: Org expects DEADLINE before SCHEDULED for correct agenda rendering.
              ("tb" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nDEADLINE: %^t\nSCHEDULED: %^t\n")
