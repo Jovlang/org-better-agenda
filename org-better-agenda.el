@@ -170,7 +170,7 @@ DATE is a calendar list (MONTH DAY YEAR).  Mirrors the layout of
          (day-str     (if (memq org-better-agenda-language '(en it))
                           (format "%2d" day)
                         (format "%d." day))))
-    (format "%-10s %s %s %4d%s"
+    (format "%-8s %s %s %4d%s"
             day-name day-str month-name year weekstring)))
 
 ;;; Sorting
@@ -340,7 +340,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
           "  ·  "
           "────────────────")
         org-agenda-prefix-format
-        '((agenda . "  %-12t% s")
+        '((agenda . "  %-12t %s")
           (todo   . " %i ")
           (tags   . " %i %(org-better-agenda-entry-date-info) ")
           (search . " %i ")))
