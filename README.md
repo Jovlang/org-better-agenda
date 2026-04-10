@@ -89,7 +89,6 @@ It provides:
 - **Keybindings** in `org-agenda-mode-map`
 - **Everforest-style colors** for agenda faces
 - **Capture templates** for todos and events
-- Adds the inbox file to `org-agenda-files`
 
 ### Keybindings
 
