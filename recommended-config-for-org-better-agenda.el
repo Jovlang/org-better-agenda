@@ -58,7 +58,7 @@
              ("ts" "Scheduled todo" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nSCHEDULED: %^t\n")
-             ("tb" "Todo with deadline and schedule" entry
+             ("tb" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nSCHEDULED: %^t\nDEADLINE: %^t\n")
 
