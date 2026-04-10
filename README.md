@@ -1,6 +1,6 @@
 # Org-Better-Agenda
 
-Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and optional keybindings.
+Emacs package providing a custom `org-agenda` view with opinionated sorting and highlighting.
 
 ## Features
 
