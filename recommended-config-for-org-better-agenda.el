@@ -1,4 +1,4 @@
-;;; recommended-config-for-org-better-agenda.el --- Recommended keybindings and colors -*- lexical-binding: t; -*-
+;;; recommended-config-for-org-better-agenda.el --- Recommended Org-Better-Agenda config -*- lexical-binding: t; -*-
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
