@@ -84,6 +84,8 @@ Or with use-package:
   :after org-better-agenda)
 ```
 
+Or copy it into your init file to make changes as you see fit.
+
 It provides:
 
 - **Keybindings** in `org-agenda-mode-map`
