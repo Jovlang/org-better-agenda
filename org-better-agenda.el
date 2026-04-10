@@ -343,17 +343,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
         '((agenda . "  %-12t %s")
           (todo   . " %i ")
           (tags   . " %i %(org-better-agenda-entry-date-info) ")
-          (search . " %i ")))
-
-  (set-face-attribute 'org-agenda-date-today   nil :inherit 'warning                :foreground nil :weight 'bold   :underline nil)
-  (set-face-attribute 'org-agenda-date         nil :inherit 'font-lock-keyword-face  :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-date-weekend nil :inherit 'font-lock-constant-face :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-structure    nil :inherit 'font-lock-builtin-face  :foreground nil :weight 'bold   :height 1.05)
-  (set-face-attribute 'org-time-grid           nil :inherit 'shadow                  :foreground nil :weight 'normal)
-  (set-face-attribute 'org-agenda-current-time nil :inherit 'warning                :foreground nil :weight 'bold)
-  (set-face-attribute 'org-upcoming-deadline   nil :inherit 'error                   :foreground nil :weight 'normal)
-  (set-face-attribute 'org-imminent-deadline   nil :inherit 'error                   :foreground nil :weight 'bold)
-  (set-face-attribute 'org-scheduled-today     nil :inherit 'success                 :foreground nil :weight 'normal))
+          (search . " %i "))))
 
 ;;; Custom commands
 
