@@ -70,7 +70,7 @@ Set `org-better-agenda-language` before loading the package (or call
 
 ## Recommended config
 
-`recommended-config-for-org-better-agenda.el` is an optional companion file with opinionated defaults. Load it after the main package:
+`recommended-config-for-org-better-agenda.el` is recommended if you're new to Org-Agenda and want to get started quickly. Load it after the main package:
 
 ```emacs-lisp
 (require 'recommended-config-for-org-better-agenda)
