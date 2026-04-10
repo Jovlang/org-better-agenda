@@ -1,6 +1,6 @@
 # Org-Better-Agenda
 
-Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and faces.
+Emacs package providing a custom `org-agenda` view with opinionated sorting, highlighting, and optional keybindings.
 
 ## Features
 
@@ -11,7 +11,7 @@ Emacs package providing a custom `org-agenda` view with opinionated sorting, hig
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates
 - Integrates with `org-modern` for styling
 - **Multilingual** — English, Norwegian, Italian, and German built in
-- Keybindings in agenda mode: `d` (deadline), `s` (schedule), `\` (set tags), `T` (toggle tags), `L` (cycle language)
+- Optional recommended config with keybindings, Everforest colors, and capture templates
 
 ## Requirements
 
@@ -68,9 +68,30 @@ Set `org-better-agenda-language` before loading the package (or call
 (setq org-better-agenda-language 'de)
 ```
 
-## Keybindings
+## Recommended config
 
-These are set in `org-agenda-mode-map` when the package loads.
+`recommended-config-for-org-better-agenda.el` is an optional companion file with opinionated defaults. Load it after the main package:
+
+```emacs-lisp
+(require 'recommended-config-for-org-better-agenda)
+```
+
+Or with use-package:
+
+```emacs-lisp
+(use-package recommended-config-for-org-better-agenda
+  :load-path "/path/to/org-better-agenda"
+  :after org-better-agenda)
+```
+
+It provides:
+
+- **Keybindings** in `org-agenda-mode-map`
+- **Everforest-style colors** for agenda faces
+- **Capture templates** for todos and events
+- Adds the inbox file to `org-agenda-files`
+
+### Keybindings
 
 | Key | Command |
 |---|---|
@@ -80,30 +101,28 @@ These are set in `org-agenda-mode-map` when the package loads.
 | `T` | Toggle tag display |
 | `L` | Cycle through available languages |
 
-## Recommended colors
+### Capture templates
 
-These face settings work well with [Everforest](https://github.com/sainnhe/everforest)-style themes:
+Templates are added under two groups:
+
+| Key | Description |
+|---|---|
+| `tt` | Todo |
+| `td` | Todo with deadline |
+| `ts` | Scheduled todo |
+| `tb` | Todo with deadline and schedule |
+| `ee` | Event |
+| `er` | Recurring event (weekly) |
+
+Captured entries go to the file set by `org-better-agenda-inbox-file` (default: `~/inbox.org`), which is also added to `org-agenda-files`. Set it before loading the recommended config to use a different path:
 
 ```emacs-lisp
-(with-eval-after-load 'org-modern
-  (set-face-attribute 'org-modern-tag          nil :foreground "#abc"))
-
-(with-eval-after-load 'org-agenda
-  (set-face-attribute 'org-agenda-date-today   nil :foreground "#E69875" :weight 'bold   :underline nil)
-  (set-face-attribute 'org-agenda-date         nil :foreground "#83C092" :weight 'normal)
-  (set-face-attribute 'org-agenda-date-weekend nil :foreground "#D699B6" :weight 'normal)
-  (set-face-attribute 'org-agenda-structure    nil :foreground "#DBBC7F" :weight 'bold   :height 1.05)
-  (set-face-attribute 'org-time-grid           nil :foreground "#3D4F56" :weight 'normal)
-  (set-face-attribute 'org-agenda-current-time nil :foreground "#E69875" :weight 'bold)
-  (set-face-attribute 'org-upcoming-deadline   nil :foreground "#E67E80" :weight 'normal)
-  (set-face-attribute 'org-scheduled-today     nil :foreground "#A7C080" :weight 'normal))
-
-(with-eval-after-load 'org-better-agenda
-  (set-face-attribute 'org-better-agenda-time-face           nil :foreground "#7FBBB3" :weight 'bold   :slant 'normal)
-  (set-face-attribute 'org-better-agenda-allday-face         nil :foreground "#DBBC7F" :weight 'normal :slant 'italic)
-  (set-face-attribute 'org-better-agenda-deadline-date-face  nil :foreground "#E67E80" :weight 'bold)
-  (set-face-attribute 'org-better-agenda-scheduled-date-face nil :foreground "#7FBBB3" :weight 'bold))
+(setq org-better-agenda-inbox-file "~/org/inbox.org")
 ```
+
+### Colors
+
+Face settings are tuned for [Everforest](https://github.com/sainnhe/everforest)-style themes.
 
 ## License
 

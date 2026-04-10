@@ -295,7 +295,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   (setq org-agenda-remove-tags (not org-agenda-remove-tags))
   (org-agenda-redo-all))
 
-;;; Agenda display settings and keybindings
+;;; Agenda display settings
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-show-all-dates t
@@ -317,12 +317,6 @@ Uses the `time-of-day' text property rather than layout heuristics."
           (todo   . " %i ")
           (tags   . " %i %(org-better-agenda-entry-date-info) ")
           (search . " %i ")))
-
-  (define-key org-agenda-mode-map (kbd "d") #'org-agenda-deadline)
-  (define-key org-agenda-mode-map (kbd "s") #'org-agenda-schedule)
-  (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
-  (define-key org-agenda-mode-map (kbd "T") #'org-better-agenda-toggle-tags)
-  (define-key org-agenda-mode-map (kbd "L") #'org-better-agenda-toggle-language)
 
   (set-face-attribute 'org-agenda-date-today   nil :inherit 'warning                :foreground nil :weight 'bold   :underline nil)
   (set-face-attribute 'org-agenda-date         nil :inherit 'font-lock-keyword-face  :foreground nil :weight 'normal)
