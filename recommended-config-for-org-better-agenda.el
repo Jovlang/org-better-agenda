@@ -4,8 +4,8 @@
 
 ;;; Commentary:
 ;; Optional but recommended user configuration for org-better-agenda.
-;; Load this after org-better-agenda to get opinionated keybindings and
-;; Everforest-style colors.
+;; Load this after org-better-agenda to get opinionated capture templates,
+;; keybindings, and Everforest-style colors.
 ;; Alternatively, copy this into your init file to make changes as you see fit.
 
 ;;; Code:

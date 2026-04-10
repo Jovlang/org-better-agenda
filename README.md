@@ -11,7 +11,7 @@ Emacs package providing a custom `org-agenda` view with opinionated sorting, hig
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates
 - Integrates with `org-modern` for styling
 - **Multilingual** — English, Norwegian, Italian, and German built in
-- Optional recommended config with keybindings, Everforest colors, and capture templates
+- Optional recommended config with capture templates, keybindings, and Everforest-style colors
 
 ## Requirements
 
@@ -88,19 +88,9 @@ Or copy it into your init file to make changes as you see fit.
 
 It provides:
 
-- **Keybindings** in `org-agenda-mode-map`
-- **Everforest-style colors** for agenda faces
 - **Capture templates** for todos and events
-
-### Keybindings
-
-| Key | Command |
-|---|---|
-| `d` | Set deadline (`org-agenda-deadline`) |
-| `s` | Schedule (`org-agenda-schedule`) |
-| `\` | Set tags (`org-agenda-set-tags`) |
-| `T` | Toggle tag display |
-| `L` | Cycle through available languages |
+- **Keybindings** in `org-agenda-mode-map`
+- **Everforest-style colors** for agenda views
 
 ### Capture templates
 
@@ -120,6 +110,16 @@ Captured entries go to the file set by `org-better-agenda-inbox-file` (default: 
 ```emacs-lisp
 (setq org-better-agenda-inbox-file "~/org/inbox.org")
 ```
+
+### Keybindings
+
+| Key | Command |
+|---|---|
+| `d` | Set deadline (`org-agenda-deadline`) |
+| `s` | Schedule (`org-agenda-schedule`) |
+| `\` | Set tags (`org-agenda-set-tags`) |
+| `T` | Toggle tag display |
+| `L` | Cycle through available languages |
 
 ### Colors
 
