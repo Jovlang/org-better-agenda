@@ -347,7 +347,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Custom commands
 
-;; "Upcoming deadlines": tasks with a DEADLINE date.
+;; "Must do": tasks with a DEADLINE date.
 ;; "When I have time": tasks with no DEADLINE and no SCHEDULED date.
 (defun org-better-agenda--build-command ()
   "Return the \"g\" agenda command spec for the current language."
