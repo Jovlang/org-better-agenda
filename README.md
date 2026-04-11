@@ -124,6 +124,10 @@ Captured entries go to the file set by `org-better-agenda-inbox-file` (default: 
 
 Face settings are tuned for [Everforest](https://github.com/sainnhe/everforest)-style themes.
 
+## Current limitations
+
+- Scheduled tasks without a deadline are only shown in the week view
+
 ## License
 
 GPL-3.0-or-later. See [LICENSE](LICENSE).
