@@ -347,7 +347,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Custom commands
 
-;; "Must do": tasks with a DEADLINE date.
+;; "Must do": tasks with a DEADLINE or SCHEDULED date.
 ;; "When I have time": tasks with no DEADLINE, no SCHEDULED, and no active timestamp.
 (defun org-better-agenda--build-command ()
   "Return the \"g\" agenda command spec for the current language."
@@ -359,7 +359,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
               (org-agenda-overriding-header "")
               (org-agenda-cmp-user-defined #'org-better-agenda-cmp-allday-first)
               (org-agenda-sorting-strategy '(user-defined-up time-up))))
-     (tags-todo "+DEADLINE<>\"\""
+     (tags-todo "+DEADLINE<>\"\"|+SCHEDULED<>\"\""
                 ((org-agenda-overriding-header
                   ,(org-better-agenda--str 'must-do-header))
                  (org-agenda-cmp-user-defined
