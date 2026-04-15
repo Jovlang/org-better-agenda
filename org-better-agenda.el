@@ -142,10 +142,10 @@ Shows both dates when present, separated by \" · \"."
          (parts
           (delq nil
                 (list
-                 (when deadline
-                   (format "%s: %s" dl-label (org-better-agenda-format-date deadline)))
                  (when scheduled
-                   (format "%s: %s" sc-label (org-better-agenda-format-date scheduled)))))))
+                   (format "%s: %s" sc-label (org-better-agenda-format-date scheduled)))
+                 (when deadline
+                   (format "%s: %s" dl-label (org-better-agenda-format-date deadline)))))))
     (string-join parts " · ")))
 
 

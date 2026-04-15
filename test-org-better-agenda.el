@@ -225,7 +225,7 @@ the buffer is not killed out from under the marker during BODY."
   (ora-test--with-org-entry
       "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
     (should (equal (org-better-agenda-entry-date-info)
-                   "Deadline: 4 April · Scheduled: 1 March"))))
+                   "Scheduled: 1 March · Deadline: 4 April"))))
 
 (ert-deftest ora/entry-date-info/neither ()
   (ora-test--with-org-entry "* Task\n"
@@ -249,7 +249,7 @@ the buffer is not killed out from under the marker during BODY."
     (ora-test--with-org-entry
         "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
       (should (equal (org-better-agenda-entry-date-info)
-                     "Frist: 4. april · Planlagt: 1. mars")))))
+                     "Planlagt: 1. mars · Frist: 4. april")))))
 
 ;;; org-better-agenda-entry-date-info — German
 
@@ -269,7 +269,7 @@ the buffer is not killed out from under the marker during BODY."
     (ora-test--with-org-entry
         "* Task\nDEADLINE: <2026-04-04 Sat> SCHEDULED: <2026-03-01 Sun>\n"
       (should (equal (org-better-agenda-entry-date-info)
-                     "Frist: 4. April · Geplant: 1. März")))))
+                     "Geplant: 1. März · Frist: 4. April")))))
 
 ;;; org-better-agenda--str
 
@@ -287,8 +287,8 @@ the buffer is not killed out from under the marker during BODY."
   (let ((org-better-agenda-language 'no))
     (should (equal (org-better-agenda--str 'deadline-label)  "Frist"))
     (should (equal (org-better-agenda--str 'scheduled-label) "Planlagt"))
-    (should (equal (org-better-agenda--str 'must-do-header)  "Nødvendige gjøremål"))
-    (should (equal (org-better-agenda--str 'someday-header)  "Når jeg har tid/lyst"))
+    (should (equal (org-better-agenda--str 'must-do-header)  "Må gjøres"))
+    (should (equal (org-better-agenda--str 'someday-header)  "Når jeg har tid"))
     (should (equal (org-better-agenda--str 'view-title)      "Oppgaver"))))
 
 (ert-deftest ora/str/german-keys ()
