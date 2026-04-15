@@ -93,16 +93,18 @@ It provides:
 
 ### Capture templates
 
-Templates are added under two groups:
-
 | Key | Description |
 |---|---|
-| `tt` | Todo |
-| `td` | Todo with deadline |
-| `ts` | Scheduled todo |
-| `tb` | Todo with deadline and schedule |
-| `ee` | Event |
-| `er` | Recurring event (weekly) |
+| `t` | Todo |
+| `d` | Todo with deadline |
+| `s` | Scheduled todo |
+| `b` | Scheduled todo with deadline |
+| `e` | Event |
+| `w` | Weekly event |
+| `m` | Monthly event |
+| `y` | Yearly event |
+
+Templates that involve a date prompt for it before opening the capture buffer.
 
 Captured entries go to the file set by `org-better-agenda-inbox-file` (default: `~/inbox.org`), which is also added to `org-agenda-files`. Set it before loading the recommended config to use a different path:
 
