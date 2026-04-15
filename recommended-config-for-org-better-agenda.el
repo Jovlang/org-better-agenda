@@ -12,6 +12,12 @@
 
 ;;; Capture templates
 
+(defun org-better-agenda--capture-repeating-timestamp (repeater)
+  "Prompt for a date and return an active timestamp string with REPEATER inside.
+REPEATER is a string like \"+1w\"."
+  (let ((time (org-read-date nil t nil "Date: ")))
+    (concat "<" (format-time-string "%Y-%m-%d %a" time) " " repeater ">")))
+
 (defcustom org-better-agenda-inbox-file "~/inbox.org"
   "Path to the org inbox file used by the recommended capture templates."
   :type 'file
@@ -21,28 +27,31 @@
 
 (with-eval-after-load 'org-capture
   (dolist (template
-           `(("t" "Todos")
-             ("tt" "Todo" entry
+           `(("t" "Todo" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\n")
-             ("td" "Todo with deadline" entry
+             ("d" "Todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nDEADLINE: %^t\n")
-             ("ts" "Scheduled todo" entry
+             ("s" "Scheduled todo" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nSCHEDULED: %^t\n")
              ;; Note: Org expects DEADLINE before SCHEDULED for correct agenda rendering.
-             ("tb" "Scheduled todo with deadline" entry
+             ("b" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\nDEADLINE: %^t\nSCHEDULED: %^t\n")
-
-             ("e" "Events")
-             ("ee" "Event" entry
+             ("e" "Event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
               "* %?\n%^t\n")
-             ("er" "Recurring event" entry
+             ("w" "Weekly event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
-              "* %?\n%^t +1w\n")))
+              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1w\")\n")
+             ("m" "Monthly event" entry
+              (file+headline ,org-better-agenda-inbox-file "Events")
+              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1m\")\n")
+             ("y" "Yearly event" entry
+              (file+headline ,org-better-agenda-inbox-file "Events")
+              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1y\")\n")))
     (add-to-list 'org-capture-templates template t)))
 
 ;;; Keybindings
