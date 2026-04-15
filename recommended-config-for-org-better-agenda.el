@@ -79,6 +79,7 @@ PROMPT overrides the minibuffer prompt string."
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "d") #'org-agenda-deadline)
   (define-key org-agenda-mode-map (kbd "s") #'org-agenda-schedule)
+  (define-key org-agenda-mode-map (kbd "e") #'org-agenda-date-prompt)
   (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
   (define-key org-agenda-mode-map (kbd "T") #'org-better-agenda-toggle-tags)
   (define-key org-agenda-mode-map (kbd "L") #'org-better-agenda-toggle-language))

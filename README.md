@@ -116,6 +116,7 @@ Captured entries go to the file set by `org-better-agenda-inbox-file` (default: 
 |---|---|
 | `d` | Set deadline (`org-agenda-deadline`) |
 | `s` | Schedule (`org-agenda-schedule`) |
+| `e` | Change timestamp at point (`org-agenda-date-prompt`) |
 | `\` | Set tags (`org-agenda-set-tags`) |
 | `T` | Toggle tag display |
 | `L` | Cycle through available languages |
