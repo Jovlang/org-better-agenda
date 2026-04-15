@@ -12,11 +12,14 @@
 
 ;;; Capture templates
 
-(defun org-better-agenda--capture-repeating-timestamp (repeater)
-  "Prompt for a date and return an active timestamp string with REPEATER inside.
-REPEATER is a string like \"+1w\"."
-  (let ((time (org-read-date nil t nil "Date: ")))
-    (concat "<" (format-time-string "%Y-%m-%d %a" time) " " repeater ">")))
+(defun org-better-agenda--read-timestamp (&optional repeater prompt)
+  "Prompt for a date and return an active timestamp string.
+If REPEATER (e.g. \"+1w\") is non-nil, embed it inside the brackets.
+PROMPT overrides the minibuffer prompt string."
+  (let ((time (org-read-date nil t nil (or prompt "Date: "))))
+    (concat "<" (format-time-string "%Y-%m-%d %a" time)
+            (if repeater (concat " " repeater) "")
+            ">")))
 
 (defcustom org-better-agenda-inbox-file "~/inbox.org"
   "Path to the org inbox file used by the recommended capture templates."
@@ -32,26 +35,40 @@ REPEATER is a string like \"+1w\"."
               "* TODO %?\n")
              ("d" "Todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
-              "* TODO %?\nDEADLINE: %^t\n")
+              (function ,(lambda ()
+                           (concat "* TODO %?\nDEADLINE: "
+                                   (org-better-agenda--read-timestamp nil "Deadline: ")
+                                   "\n"))))
              ("s" "Scheduled todo" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
-              "* TODO %?\nSCHEDULED: %^t\n")
+              (function ,(lambda ()
+                           (concat "* TODO %?\nSCHEDULED: "
+                                   (org-better-agenda--read-timestamp nil "Scheduled: ")
+                                   "\n"))))
              ;; Note: Org expects DEADLINE before SCHEDULED for correct agenda rendering.
              ("b" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
-              "* TODO %?\nDEADLINE: %^t\nSCHEDULED: %^t\n")
+              (function ,(lambda ()
+                           (let ((deadline (org-better-agenda--read-timestamp nil "Deadline: "))
+                                 (scheduled (org-better-agenda--read-timestamp nil "Scheduled: ")))
+                             (concat "* TODO %?\nDEADLINE: " deadline
+                                     "\nSCHEDULED: " scheduled "\n")))))
              ("e" "Event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
-              "* %?\n%^t\n")
+              (function ,(lambda ()
+                           (concat "* %?\n" (org-better-agenda--read-timestamp nil "Event: ") "\n"))))
              ("w" "Weekly event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
-              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1w\")\n")
+              (function ,(lambda ()
+                           (concat "* %?\n" (org-better-agenda--read-timestamp "+1w" "Weekly: ") "\n"))))
              ("m" "Monthly event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
-              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1m\")\n")
+              (function ,(lambda ()
+                           (concat "* %?\n" (org-better-agenda--read-timestamp "+1m" "Monthly: ") "\n"))))
              ("y" "Yearly event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
-              "* %?\n%(org-better-agenda--capture-repeating-timestamp \"+1y\")\n")))
+              (function ,(lambda ()
+                           (concat "* %?\n" (org-better-agenda--read-timestamp "+1y" "Yearly: ") "\n"))))))
     (add-to-list 'org-capture-templates template t)))
 
 ;;; Keybindings
