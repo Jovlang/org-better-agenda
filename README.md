@@ -104,8 +104,6 @@ It provides:
 | `m` | Monthly event |
 | `y` | Yearly event |
 
-Templates that involve a date prompt for it before opening the capture buffer.
-
 Captured entries go to the file set by `org-better-agenda-inbox-file` (default: `~/inbox.org`), which is also added to `org-agenda-files`. Set it before loading the recommended config to use a different path:
 
 ```emacs-lisp
