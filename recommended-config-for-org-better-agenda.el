@@ -45,14 +45,17 @@ PROMPT overrides the minibuffer prompt string."
                            (concat "* TODO %?\nSCHEDULED: "
                                    (org-better-agenda--read-timestamp nil "Scheduled: ")
                                    "\n"))))
-             ;; Note: Org expects DEADLINE before SCHEDULED for correct agenda rendering.
+             ;; Note: DEADLINE and SCHEDULED must be on the same line (separated
+             ;; by a space) for org to parse them as planning info.  On separate
+             ;; lines, org treats the second as a plain active timestamp in the
+             ;; entry body, which breaks agenda rendering.
              ("b" "Scheduled todo with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               (function ,(lambda ()
                            (let ((deadline (org-better-agenda--read-timestamp nil "Deadline: "))
                                  (scheduled (org-better-agenda--read-timestamp nil "Scheduled: ")))
                              (concat "* TODO %?\nDEADLINE: " deadline
-                                     "\nSCHEDULED: " scheduled "\n")))))
+                                     " SCHEDULED: " scheduled "\n")))))
              ("e" "Event" entry
               (file+headline ,org-better-agenda-inbox-file "Events")
               (function ,(lambda ()
