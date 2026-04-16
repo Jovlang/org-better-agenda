@@ -12,12 +12,18 @@
 
 ;;; Capture templates
 
+(defvar org-time-was-given nil)
+(defvar org-end-time-was-given nil)
+
 (defun org-better-agenda--read-timestamp (&optional repeater prompt)
   "Prompt for a date and return an active timestamp string.
 If REPEATER (e.g. \"+1w\") is non-nil, embed it inside the brackets.
 PROMPT overrides the minibuffer prompt string."
   (let ((time (org-read-date nil t nil (or prompt "Date: "))))
-    (concat "<" (format-time-string "%Y-%m-%d %a" time)
+    (concat "<" (format-time-string
+                 (if org-time-was-given "%Y-%m-%d %a %H:%M" "%Y-%m-%d %a")
+                 time)
+            (if org-end-time-was-given (concat "-" org-end-time-was-given) "")
             (if repeater (concat " " repeater) "")
             ">")))
 
