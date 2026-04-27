@@ -328,6 +328,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   (setq org-agenda-show-all-dates t
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-if-done t
+        org-deadline-warning-days 0
         org-agenda-scheduled-leaders '("" "")
         org-agenda-block-separator ?─
         org-agenda-tags-column 45
