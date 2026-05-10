@@ -325,7 +325,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 ;;; Agenda display settings
 
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-show-all-dates t
+  (setq org-agenda-show-all-dates nil
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-if-done t
         org-deadline-warning-days 0
@@ -354,7 +354,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   "Return the \"g\" agenda command spec for the current language."
   `("g" ,(org-better-agenda--str 'view-title)
     ((agenda ""
-             ((org-agenda-span 7)
+             ((org-agenda-span 30)
               (org-agenda-start-day "+0d")
               (org-agenda-start-on-weekday nil)
               (org-agenda-overriding-header "")
