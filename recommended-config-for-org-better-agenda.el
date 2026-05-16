@@ -94,7 +94,8 @@ PROMPT overrides the minibuffer prompt string."
 
 (with-eval-after-load 'org-modern
   (set-face-attribute 'org-modern-tag   nil :foreground "#abc")
-  (set-face-attribute 'org-modern-todo  nil :foreground "#345" :background "#abc"))
+  (set-face-attribute 'org-modern-todo  nil :foreground "#345" :background "#abc")
+  (set-face-attribute 'org-modern-done  nil :foreground "#777" :background "#345"))
 
 (with-eval-after-load 'org-agenda
   (set-face-attribute 'org-agenda-date-today   nil :foreground "#E69875" :weight 'bold   :underline nil)
