@@ -101,7 +101,7 @@ PROMPT overrides the minibuffer prompt string."
   (set-face-attribute 'org-agenda-date-today   nil :foreground "#E69875" :weight 'bold   :underline nil)
   (set-face-attribute 'org-agenda-date         nil :foreground "#83C092" :weight 'normal)
   (set-face-attribute 'org-agenda-date-weekend nil :foreground "#D699B6" :weight 'normal)
-  (set-face-attribute 'org-agenda-structure    nil :foreground "#DBBC7F" :weight 'bold   :height 1.05)
+  (set-face-attribute 'org-agenda-structure    nil :foreground "#607080" :weight 'bold   :height 1.05)
   (set-face-attribute 'org-time-grid           nil :foreground "#3D4F56" :weight 'normal)
   (set-face-attribute 'org-agenda-current-time nil :foreground "#E69875" :weight 'bold)
   (set-face-attribute 'org-upcoming-deadline   nil :foreground "#E67E80" :weight 'normal)
