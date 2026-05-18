@@ -36,16 +36,16 @@ PROMPT overrides the minibuffer prompt string."
 
 (with-eval-after-load 'org-capture
   (dolist (template
-           `(("t" "Todo" entry
+           `(("t" "Someday task" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               "* TODO %?\n")
-             ("d" "Todo with deadline" entry
+             ("d" "Task with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               (function ,(lambda ()
                            (concat "* TODO %?\nDEADLINE: "
                                    (org-better-agenda--read-timestamp nil "Deadline: ")
                                    "\n"))))
-             ("s" "Scheduled todo" entry
+             ("s" "Scheduled task" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               (function ,(lambda ()
                            (concat "* TODO %?\nSCHEDULED: "
@@ -55,7 +55,7 @@ PROMPT overrides the minibuffer prompt string."
              ;; by a space) for org to parse them as planning info.  On separate
              ;; lines, org treats the second as a plain active timestamp in the
              ;; entry body, which breaks agenda rendering.
-             ("b" "Scheduled todo with deadline" entry
+             ("b" "Scheduled task with deadline" entry
               (file+headline ,org-better-agenda-inbox-file "Tasks")
               (function ,(lambda ()
                            (let ((deadline (org-better-agenda--read-timestamp nil "Deadline: "))
