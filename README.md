@@ -87,7 +87,7 @@ Or copy it into your init file to make changes as you see fit.
 
 It provides:
 
-- **Capture templates** for todos and events
+- **Capture templates** for tasks and events
 - **Keybindings** in `org-agenda-mode-map`
 - **Everforest-style colors** for agenda views
 
@@ -95,10 +95,10 @@ It provides:
 
 | Key | Description |
 |---|---|
-| `t` | Todo |
-| `d` | Todo with deadline |
-| `s` | Scheduled todo |
-| `b` | Scheduled todo with deadline |
+| `t` | Someday task |
+| `d` | Task with deadline |
+| `s` | Scheduled task |
+| `b` | Scheduled task with deadline |
 | `e` | Event |
 | `w` | Weekly event |
 | `m` | Monthly event |
