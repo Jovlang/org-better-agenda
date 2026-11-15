@@ -62,6 +62,41 @@ the buffer is not killed out from under the marker during BODY."
 
 ;;; Calendar entries
 
+(ert-deftest ora/deadlines/includes-headings-without-todo ()
+  "Include plain and TODO headings, but exclude done and distant entries."
+  (let ((file (make-temp-file "ora-deadlines-" nil ".org"))
+        (org-agenda-buffer-name "*ora-deadlines-test*")
+        (org-agenda-finalize-hook nil)
+        (org-better-agenda-language 'en)
+        (org-better-agenda-show-upcoming-deadlines t)
+        (org-better-agenda-must-do-deadline-days 60))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (let ((date (format-time-string "<%Y-%m-%d %a>")))
+              (dolist (heading '("Plain deadline" "TODO Open deadline"
+                                 "DONE Completed deadline"))
+                (insert "* " heading "\nDEADLINE: " date "\n"))
+              (insert "* Distant deadline\nDEADLINE: "
+                      (format-time-string "<%Y-%m-%d %a>"
+                                          (time-add (current-time) (days-to-time 90)))
+                      "\n")))
+          (let ((org-agenda-files (list file)))
+            (org-better-agenda)
+            (with-current-buffer org-agenda-buffer-name
+              (goto-char (point-min))
+              (search-forward "Must do")
+              (let ((section (buffer-substring-no-properties (point) (point-max))))
+                (should (string-match-p "Plain deadline" section))
+                (should (string-match-p "Open deadline" section))
+                (should-not (string-match-p "Completed deadline" section))
+                (should-not (string-match-p "Distant deadline" section))))))
+      (when (get-buffer org-agenda-buffer-name)
+        (kill-buffer org-agenda-buffer-name))
+      (when (get-file-buffer file)
+        (kill-buffer (get-file-buffer file)))
+      (delete-file file))))
+
 (ert-deftest ora/calendar/toggle-upcoming-deadlines ()
   "Toggling removes and restores the section while keeping calendar deadlines."
   (let ((file (make-temp-file "ora-toggle-" nil ".org"))

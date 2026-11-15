@@ -164,6 +164,12 @@ Returns nil on any parse error so a bad timestamp never breaks the agenda."
         (when (and days (> days limit))
           (org-better-agenda--skip-current-subtree))))))
 
+(defun org-better-agenda--skip-deadline-entry ()
+  "Skip completed entries and deadlines beyond the Must do limit."
+  (if (org-entry-is-done-p)
+      (org-better-agenda--skip-current-subtree)
+    (org-better-agenda--skip-distant-deadline)))
+
 (defun org-better-agenda-entry-date-info ()
   "Return readable DEADLINE/SCHEDULED info for the current agenda entry.
 Shows both dates when present, separated by \" · \"."
@@ -431,7 +437,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Custom commands
 
-;; "Must do": tasks with a DEADLINE, when the section is enabled.
+;; "Must do": unfinished entries with a DEADLINE, with or without a TODO keyword.
 ;; "When I have time": tasks with no DEADLINE, no SCHEDULED, and no active timestamp.
 (defun org-better-agenda--build-command ()
   "Return the \"g\" agenda command spec for the current language."
@@ -445,11 +451,11 @@ Uses the `time-of-day' text property rather than layout heuristics."
               (org-agenda-cmp-user-defined #'org-better-agenda-cmp-allday-first)
               (org-agenda-sorting-strategy '(user-defined-up time-up))))
      ,@(when org-better-agenda-show-upcoming-deadlines
-         `((tags-todo "+DEADLINE<>\"\""
+         `((tags "+DEADLINE<>\"\""
                 ((org-agenda-overriding-header
                   ,(org-better-agenda--str 'must-do-header))
                  (org-agenda-skip-function
-                  #'org-better-agenda--skip-distant-deadline)
+                  #'org-better-agenda--skip-deadline-entry)
                  (org-agenda-cmp-user-defined
                   #'org-better-agenda-cmp-earliest-date)
                  (org-agenda-sorting-strategy
