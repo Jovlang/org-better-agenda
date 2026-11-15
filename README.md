@@ -119,7 +119,12 @@ Captured entries go to the file set by `org-better-agenda-inbox-file` (default: 
 | `e` | Change timestamp at point (`org-agenda-date-prompt`) |
 | `\` | Set tags (`org-agenda-set-tags`) |
 | `T` | Toggle tag display |
+| `D` | Toggle the upcoming deadlines (Must do) section |
 | `L` | Cycle through available languages |
+
+You can also run `M-x org-better-agenda-toggle-upcoming-deadlines`.
+Set `org-better-agenda-show-upcoming-deadlines` to `nil` to hide this section
+by default. Deadlines still appear in the calendar.
 
 ### Colors
 

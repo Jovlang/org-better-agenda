@@ -62,6 +62,39 @@ the buffer is not killed out from under the marker during BODY."
 
 ;;; Calendar entries
 
+(ert-deftest ora/calendar/toggle-upcoming-deadlines ()
+  "Toggling removes and restores the section while keeping calendar deadlines."
+  (let ((file (make-temp-file "ora-toggle-" nil ".org"))
+        (org-agenda-buffer-name "*ora-toggle-test*")
+        (org-agenda-finalize-hook nil)
+        (org-better-agenda-language 'en)
+        (org-better-agenda-show-upcoming-deadlines t)
+        (org-agenda-custom-commands nil))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert "* TODO Submit application\nDEADLINE: "
+                    (format-time-string "<%Y-%m-%d %a>") "\n"))
+          (let ((org-agenda-files (list file)))
+            (org-better-agenda)
+            (with-current-buffer org-agenda-buffer-name
+              (should (string-match-p "Must do" (buffer-string))))
+            (org-better-agenda-toggle-upcoming-deadlines)
+            (should-not org-better-agenda-show-upcoming-deadlines)
+            (with-current-buffer org-agenda-buffer-name
+              (should-not (string-match-p "Must do" (buffer-string)))
+              (should (string-match-p "Submit application" (buffer-string)))
+              (should (string-match-p "When I have time" (buffer-string))))
+            (org-better-agenda-toggle-upcoming-deadlines)
+            (should org-better-agenda-show-upcoming-deadlines)
+            (with-current-buffer org-agenda-buffer-name
+              (should (string-match-p "Must do" (buffer-string))))))
+      (when (get-buffer org-agenda-buffer-name)
+        (kill-buffer org-agenda-buffer-name))
+      (when (get-file-buffer file)
+        (kill-buffer (get-file-buffer file)))
+      (delete-file file))))
+
 (ert-deftest ora/calendar/deadline-without-todo ()
   "A heading without a TODO keyword appears on its deadline date."
   (let ((file (make-temp-file "ora-calendar-" nil ".org"))

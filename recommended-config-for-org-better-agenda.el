@@ -88,6 +88,7 @@ PROMPT overrides the minibuffer prompt string."
   (define-key org-agenda-mode-map (kbd "e") #'org-agenda-date-prompt)
   (define-key org-agenda-mode-map (kbd "\\") #'org-agenda-set-tags)
   (define-key org-agenda-mode-map (kbd "T") #'org-better-agenda-toggle-tags)
+  (define-key org-agenda-mode-map (kbd "D") #'org-better-agenda-toggle-upcoming-deadlines)
   (define-key org-agenda-mode-map (kbd "L") #'org-better-agenda-toggle-language))
 
 ;;; Everforest-style colors

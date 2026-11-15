@@ -109,6 +109,11 @@ After changing this interactively, call `org-better-agenda-setup' to apply."
          (when (featurep 'org-better-agenda)
            (org-better-agenda-setup))))
 
+(defcustom org-better-agenda-show-upcoming-deadlines t
+  "Whether to show the Must do section of upcoming and overdue deadlines."
+  :type 'boolean
+  :group 'org-better-agenda)
+
 (defcustom org-better-agenda-must-do-deadline-days 60
   "Maximum days ahead to show deadline items in the Must do section.
 Overdue deadlines are still shown.  Set to nil to show all deadlines."
@@ -386,6 +391,14 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Tags toggle
 
+(defun org-better-agenda-toggle-upcoming-deadlines ()
+  "Toggle the Must do deadlines section and refresh the agenda."
+  (interactive)
+  (setq org-better-agenda-show-upcoming-deadlines
+        (not org-better-agenda-show-upcoming-deadlines))
+  (org-better-agenda-setup)
+  (org-better-agenda))
+
 (defun org-better-agenda-toggle-tags ()
   "Toggle tag display in the agenda and refresh."
   (interactive)
@@ -418,7 +431,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Custom commands
 
-;; "Must do": tasks with a DEADLINE or SCHEDULED date.
+;; "Must do": tasks with a DEADLINE, when the section is enabled.
 ;; "When I have time": tasks with no DEADLINE, no SCHEDULED, and no active timestamp.
 (defun org-better-agenda--build-command ()
   "Return the \"g\" agenda command spec for the current language."
@@ -431,7 +444,8 @@ Uses the `time-of-day' text property rather than layout heuristics."
               (org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp))
               (org-agenda-cmp-user-defined #'org-better-agenda-cmp-allday-first)
               (org-agenda-sorting-strategy '(user-defined-up time-up))))
-     (tags-todo "+DEADLINE<>\"\""
+     ,@(when org-better-agenda-show-upcoming-deadlines
+         `((tags-todo "+DEADLINE<>\"\""
                 ((org-agenda-overriding-header
                   ,(org-better-agenda--str 'must-do-header))
                  (org-agenda-skip-function
@@ -439,7 +453,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
                  (org-agenda-cmp-user-defined
                   #'org-better-agenda-cmp-earliest-date)
                  (org-agenda-sorting-strategy
-                  '(user-defined-up priority-down category-keep))))
+                  '(user-defined-up priority-down category-keep))))))
      (tags-todo "-DEADLINE<>\"\"-SCHEDULED<>\"\"-TIMESTAMP<>\"\""
                 ((org-agenda-overriding-header
                   ,(org-better-agenda--str 'someday-header)))))))
