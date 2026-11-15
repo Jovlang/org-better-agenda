@@ -60,6 +60,32 @@ the buffer is not killed out from under the marker during BODY."
                      `(when (buffer-live-p ,bs) (kill-buffer ,bs)))
                    buf-syms)))))
 
+;;; Calendar entries
+
+(ert-deftest ora/calendar/deadline-without-todo ()
+  "A heading without a TODO keyword appears on its deadline date."
+  (let ((file (make-temp-file "ora-calendar-" nil ".org"))
+        (org-agenda-buffer-name "*ora-calendar-test*")
+        (org-agenda-finalize-hook nil))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert "* Submit application\nDEADLINE: "
+                    (format-time-string "<%Y-%m-%d %a>") "\n"))
+          (let ((org-agenda-files (list file)))
+            (org-better-agenda)
+            (with-current-buffer org-agenda-buffer-name
+              (goto-char (point-min))
+              (should (search-forward "Submit application" nil t))
+              (should (eq (get-text-property (line-beginning-position)
+                                             'org-agenda-type)
+                          'agenda)))))
+      (when (get-buffer org-agenda-buffer-name)
+        (kill-buffer org-agenda-buffer-name))
+      (when (get-file-buffer file)
+        (kill-buffer (get-file-buffer file)))
+      (delete-file file))))
+
 ;;; org-better-agenda-format-date — English (default)
 
 (ert-deftest ora/format-date/normal ()
