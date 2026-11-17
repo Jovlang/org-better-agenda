@@ -119,7 +119,7 @@ After changing this interactively, call `org-better-agenda-setup' to apply."
   :type 'boolean
   :group 'org-better-agenda)
 
-(defcustom org-better-agenda-must-do-deadline-days 60
+(defcustom org-better-agenda-must-do-deadline-days 365
   "Maximum days ahead to show deadline items in the Must do section.
 Overdue deadlines are still shown.  Set to nil to show all deadlines."
   :type '(choice (const :tag "No limit" nil)
@@ -309,7 +309,11 @@ DATE is a calendar list (MONTH DAY YEAR).  Mirrors the layout of
 
 (defface org-better-agenda-days-later-face
   '((t :foreground "#8a8a6a" :weight bold))
-  "Nd countdown face for deadlines 15+ days away.")
+  "Nd countdown face for deadlines 15–90 days away.")
+
+(defface org-better-agenda-distant-deadline-face
+  '((t :foreground "#888888"))
+  "Nd countdown face for deadlines more than 90 days away.")
 
 (defface org-better-agenda-scheduled-date-face
   '((t :inherit font-lock-type-face :weight bold))
@@ -363,7 +367,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
                            'face 'org-better-agenda-scheduled-date-face)))))
 
 (defun org-better-agenda-highlight-days-left ()
-  "Highlight Nd countdown strings in the must-do section with urgency colors."
+  "Color Must do countdowns by urgency, using grey over 90 days away."
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward "\\( *\\(-?[0-9]+\\)d\\)\\b" nil t)
@@ -371,7 +375,8 @@ Uses the `time-of-day' text property rather than layout heuristics."
         (let* ((days (string-to-number (match-string 2)))
                (face (cond ((<= days 7)  'org-better-agenda-days-urgent-face)
                            ((<= days 14) 'org-better-agenda-days-soon-face)
-                           (t            'org-better-agenda-days-later-face))))
+                           ((<= days 90) 'org-better-agenda-days-later-face)
+                           (t            'org-better-agenda-distant-deadline-face))))
           (put-text-property (match-beginning 1) (match-end 1) 'face face))))))
 
 ;;; Finalize hook
