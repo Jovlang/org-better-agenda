@@ -4,7 +4,7 @@ Emacs package providing a custom `org-agenda` view with opinionated sorting and 
 
 ## Features
 
-- **30-day agenda** starting today, with all-day events sorted before timed entries
+- **30-day agenda** starting today, with all-day events sorted before timed entries; press `V` to cycle through 7, 14, and 30 days
 - **"Must do" section** — overdue deadlines and deadlines within the next 60 days, sorted by earliest date
 - **"When I have time" section** — tasks without any date
 - Custom faces for timed entries, all-day events, deadline dates, and scheduled dates

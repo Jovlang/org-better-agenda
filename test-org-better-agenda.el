@@ -62,6 +62,32 @@ the buffer is not killed out from under the marker during BODY."
 
 ;;; Calendar entries
 
+(ert-deftest ora/calendar/norwegian-someday-leading-separator ()
+  "Remove the separator even when the section header has no Org properties."
+  (let ((org-better-agenda-language 'no))
+    (with-temp-buffer
+      (insert "────────────────────\nNår jeg har tid\n   TODO Hackheim åpen dag\n")
+      (org-better-agenda--remove-empty-calendar-separator)
+      (should (equal (buffer-string)
+                     "Når jeg har tid\n   TODO Hackheim åpen dag\n")))))
+
+(ert-deftest ora/calendar/empty-range-has-no-leading-separator ()
+  "Empty calendar headers and separators disappear even with all dates shown."
+  (let ((org-agenda-files nil)
+        (org-agenda-buffer-name "*ora-empty-calendar-test*")
+        (org-agenda-show-all-dates t)
+        (org-better-agenda-language 'en)
+        (org-better-agenda-show-upcoming-deadlines t))
+    (unwind-protect
+        (progn
+          (org-better-agenda)
+          (with-current-buffer org-agenda-buffer-name
+            (should (string-prefix-p "Must do\n"
+                                     (buffer-substring-no-properties
+                                      (point-min) (point-max))))))
+      (when (get-buffer org-agenda-buffer-name)
+        (kill-buffer org-agenda-buffer-name)))))
+
 (ert-deftest ora/deadlines/includes-headings-without-todo ()
   "Include plain and TODO headings, but exclude done and distant entries."
   (let ((file (make-temp-file "ora-deadlines-" nil ".org"))

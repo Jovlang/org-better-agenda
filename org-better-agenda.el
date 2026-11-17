@@ -109,6 +109,11 @@ After changing this interactively, call `org-better-agenda-setup' to apply."
          (when (featurep 'org-better-agenda)
            (org-better-agenda-setup))))
 
+(defcustom org-better-agenda-span 30
+  "Number of days to show in the calendar, starting today."
+  :type '(choice (const 7) (const 14) (const 30))
+  :group 'org-better-agenda)
+
 (defcustom org-better-agenda-show-upcoming-deadlines t
   "Whether to show the Must do section of upcoming and overdue deadlines."
   :type 'boolean
@@ -371,6 +376,28 @@ Uses the `time-of-day' text property rather than layout heuristics."
 
 ;;; Finalize hook
 
+(defun org-better-agenda--remove-empty-calendar-separator ()
+  "Remove an empty calendar block and its separator before the task sections."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (let (calendar-entry section-start)
+        (while (and (not section-start) (not (eobp)))
+          (cond
+           ((member (buffer-substring-no-properties
+                     (line-beginning-position) (line-end-position))
+                    (list (org-better-agenda--str 'must-do-header)
+                          (org-better-agenda--str 'someday-header)))
+            (setq section-start (point)))
+           ((or (get-text-property (point) 'org-marker)
+                (get-text-property (point) 'org-hd-marker))
+            (setq calendar-entry t)))
+          (forward-line 1))
+        (when (and section-start (not calendar-entry))
+          (let ((inhibit-read-only t))
+            (delete-region (point-min) section-start)))))))
+
 (defun org-better-agenda-finalize ()
   "Apply custom styling after agenda generation."
   (org-better-agenda-highlight-allday)
@@ -378,7 +405,8 @@ Uses the `time-of-day' text property rather than layout heuristics."
     (org-modern-agenda))
   (org-better-agenda-highlight-times)
   (org-better-agenda-highlight-date-info)
-  (org-better-agenda-highlight-days-left))
+  (org-better-agenda-highlight-days-left)
+  (org-better-agenda--remove-empty-calendar-separator))
 
 (add-hook 'org-agenda-finalize-hook #'org-better-agenda-finalize)
 
@@ -396,6 +424,17 @@ Uses the `time-of-day' text property rather than layout heuristics."
     (message "Language switched to %s" new-lang)))
 
 ;;; Tags toggle
+
+(defun org-better-agenda-cycle-span ()
+  "Cycle the calendar span through 7, 14, and 30 days and refresh."
+  (interactive)
+  (setq org-better-agenda-span
+        (or (cadr (memq org-better-agenda-span '(7 14 30))) 7))
+  (org-better-agenda-setup)
+  (org-better-agenda)
+  (message "Agenda span: %d days" org-better-agenda-span))
+
+(define-key org-agenda-mode-map (kbd "V") #'org-better-agenda-cycle-span)
 
 (defun org-better-agenda-toggle-upcoming-deadlines ()
   "Toggle the Must do deadlines section and refresh the agenda."
@@ -443,7 +482,7 @@ Uses the `time-of-day' text property rather than layout heuristics."
   "Return the \"g\" agenda command spec for the current language."
   `("g" ,(org-better-agenda--str 'view-title)
     ((agenda ""
-             ((org-agenda-span 30)
+             ((org-agenda-span ,org-better-agenda-span)
               (org-agenda-start-day "+0d")
               (org-agenda-start-on-weekday nil)
               (org-agenda-overriding-header "")
