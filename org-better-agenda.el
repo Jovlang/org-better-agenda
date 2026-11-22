@@ -326,7 +326,7 @@ DATE is a calendar list (MONTH DAY YEAR).  Mirrors the layout of
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward
-            "^  \\([0-9]\\{2\\}:[0-9]\\{2\\}\\(?:-[0-9]\\{2\\}:[0-9]\\{2\\}\\)?\\)"
+            "^  +\\([0-9]\\{1,2\\}:[0-9]\\{2\\}\\(?:-[0-9]\\{1,2\\}:[0-9]\\{2\\}\\)?\\)"
             nil t)
       (put-text-property (match-beginning 1) (match-end 1)
                          'face 'org-better-agenda-time-face))))
